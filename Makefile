@@ -5,7 +5,7 @@ CC = g++
 CFLAGS = -g -std=c++11
 INCLUDE =
 LIBDIR =
-LIBS = -lglut -lGLU -lGL -lm
+LIBS = -lglut -lGLU  -lm
 
 ###########################################################
 # Options if compiling on Mac

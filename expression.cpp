@@ -10,13 +10,32 @@
 
 using namespace std;
 
-Expression::Expression(string infixExpression) {
+Expression::Expression(string infixExpression, vector<string> consts, vector<string> vars) {
   root = NULL;
   vector<string> rpnTokens;
-  addVar("x");
-  addVar("y");
+
+  this->vars = vars;
+  this->numVars = vars.size();
+  for (string s: vars)
+    addVar(s);
+  
+  this->consts = consts;
+  this->numConsts = consts.size();
+  for (string s: consts)
+    addVar(s);
+
   infixStringToRPN(infixExpression, &rpnTokens);
   createTree(rpnTokens);
+  constructConstants();
+}
+
+void Expression::constructConstants() {
+  
+
+}
+
+void Expression::mutateConstants() {
+
 }
 
 void Expression::createTree(vector<string> tokens) {
@@ -40,31 +59,38 @@ void Expression::createTree(vector<string> tokens) {
   root = stack.top(); stack.pop();
 }
 
-double Expression::evaluate(double x, double y, double z) {
-  return evalTree(root, x, y, z);
+double Expression::evaluate(vector<double> values) {
+  return evalTree(root, values);
 }
 
-double Expression::evalTree(Node *n, double x, double y, double z) {
+double Expression::evalTree(Node *n, vector<double> values) {
   if (!n) return -1;
 
   string token = n->getValue();
   if (n->isLeaf()) {
-    if (token == "x")      return x;
-    else if (token == "y") return y;
-    else                   return stod(token);
+    for (int i = 0; i < numVars; i++) {
+      if (token == vars[i]) 
+        return values[i];
+    }
+    for (int i = 0; i < numConsts; i++) {
+      if (token == consts[i])
+        return constVals[i];
+    }
+    
+    return stod(token);
   }
   
   if (n->isBinaryOp()) {
-    if (token == "+")      return evalTree(n->getLeft(), x, y, z) + evalTree(n->getRight(), x, y, z);
-    else if (token == "-") return evalTree(n->getLeft(), x, y, z) - evalTree(n->getRight(), x, y, z);
-    else if (token == "/") return evalTree(n->getLeft(), x, y, z) / evalTree(n->getRight(), x, y, z);
-    else if (token == "*") return evalTree(n->getLeft(), x, y, z) * evalTree(n->getRight(), x, y, z);
-    else if (token == "^") return pow(evalTree(n->getLeft(), x, y, z), evalTree(n->getRight(), x, y, z));
+    if (token == "+")      return evalTree(n->getLeft(), values) + evalTree(n->getRight(), values);
+    else if (token == "-") return evalTree(n->getLeft(), values) - evalTree(n->getRight(), values);
+    else if (token == "/") return evalTree(n->getLeft(), values) / evalTree(n->getRight(), values);
+    else if (token == "*") return evalTree(n->getLeft(), values) * evalTree(n->getRight(), values);
+    else if (token == "^") return pow(evalTree(n->getLeft(), values), evalTree(n->getRight(), values));
   } else if (n->isUnaryOp()) {
-    if (token == "sin")       return sin(evalTree(n->getRight(), x, y, z));
-    else if (token == "cos")  return cos(evalTree(n->getRight(), x, y, z));
-    else if (token == "tan")  return tan(evalTree(n->getRight(), x, y, z));
-    else if (token == "abs")  return abs(evalTree(n->getRight(), x, y, z));
+    if (token == "sin")       return sin(evalTree(n->getRight(), values));
+    else if (token == "cos")  return cos(evalTree(n->getRight(), values));
+    else if (token == "tan")  return tan(evalTree(n->getRight(), values));
+    else if (token == "abs")  return abs(evalTree(n->getRight(), values));
   }
 
   return 0.0;

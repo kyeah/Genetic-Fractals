@@ -6,31 +6,24 @@
 #include "expression.h"
 #include "vec.h"
 
-/*
-class Fractal {
- public:
-  void paint();
-  void paint(int x, int y, int width, int height);
-  void mutate();
-  void calculate();
-  bool isCalculated();
-  Fractal clone();
-};
-*/
+
 class AttractorFractal {
- private:
+ protected:
   Expression *expressionX;
   Expression *expressionY;
 
   double minX, minY, maxX, maxY;  
   bool isCalculated;
   vector<Vec3f> points;
-  //  Vec3f *points;
 
  public:
+  AttractorFractal() { }
+
   AttractorFractal(string x, string y) {
-    expressionX = new Expression(x);
-    expressionY = new Expression(y);
+    vector<string> vars = {"x", "y"};
+
+    expressionX = new Expression(x, vector<string>(), vars);
+    expressionY = new Expression(y, vector<string>(), vars);
     minX = minY = INT_MAX;
     maxX = maxY = INT_MIN;
     calculate();
@@ -47,7 +40,24 @@ class AttractorFractal {
   int getNumPoints() { return points.size(); }
   void calculate();
   void paint();
+  
+};
 
+class CliffordAttractor : public AttractorFractal {
+  
+ public:
+ CliffordAttractor(string x, string y) : AttractorFractal() {
+    vector<string> consts = {"a", "b", "c", "d"};
+    vector<string> vars = {"x", "y"};
+    
+    expressionX = new Expression(x, consts, vars);
+    expressionY = new Expression(y, consts, vars);
+    minX = minY = INT_MAX;
+    maxX = maxY = INT_MIN;
+    calculate();
+  }
+
+  void mutateConsts();
 };
 
 #endif

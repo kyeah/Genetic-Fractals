@@ -50,11 +50,11 @@ class Node {
     right = newNode; 
     return prev;
   }
-
+  
   string getValue() { return value; }
   Node *getLeft() { return left; }
   Node *getRight() { return right; }
-
+  
   bool isLeaf() { return !left && !right; }
   bool isOp() { return isUnaryOp() || isBinaryOp(); }
   bool isUnaryOp() { return type == TYPE_UNARY; }
@@ -63,9 +63,14 @@ class Node {
 
 class Expression {
  public:
-  Expression(string infixExpression);
+  Expression(string infixExpression, vector<string> consts, vector<string> vars);
   
   Node *root;
+  vector<string> vars;
+  vector<string> consts;
+  vector<double> constVals;
+  int numVars;
+  int numConsts;
 
   void print();
   void printRPN();
@@ -73,8 +78,18 @@ class Expression {
   void printTreeRPN(Node *n);
 
   void createTree(vector<string> tokens);
-  double evaluate(double x, double y, double z = 0);
-  double evalTree(Node *n, double x, double y, double z = 0);
+  double evaluate(vector<double> values);
+  double evalTree(Node *n, vector<double> values);
+
+  void constructConstants();
+  void mutateConstants();
 };
+
+Node randNode();
+Node randOp();
+Node randBinaryOp();
+Node randUnaryOp();
+Node randLeaf();
+Expression randExpression();
 
 #endif

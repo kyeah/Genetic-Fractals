@@ -11,6 +11,9 @@
 #include <GL/glut.h>
 #endif
 
+const int PRECISION_POINTS = 1000000;
+const float preAlphaVal = 60000 / (float)PRECISION_POINTS;
+const float ALPHA = (preAlphaVal > 1 ? 1 : preAlphaVal);
 
 void AttractorFractal::calculate() {
   isCalculated = false;
@@ -18,9 +21,13 @@ void AttractorFractal::calculate() {
   double x, y;
   x = y = 0.0;
   
-  for (int i=0; i < 5000000; i++) {
-    x = expressionX->evaluate(x, y);
-    y = expressionY->evaluate(x, y);
+  vector<double> vals = {x, y};
+  for (int i=0; i < PRECISION_POINTS; i++) {
+    vals[0] = x;
+    vals[1] = y;
+
+    x = expressionX->evaluate(vals);
+    y = expressionY->evaluate(vals);
     
     if (x < minX) minX = x;
     if (x > maxX) maxX = x;
@@ -40,8 +47,8 @@ void AttractorFractal::paint() {
   if (!isReady())
     calculate();
   
-  glColor4f(1,1,1, 0.01); 
-  
+  glColor4f(1,1,1, ALPHA); 
+    
   glEnableClientState(GL_VERTEX_ARRAY);
   glVertexPointer(3, GL_FLOAT, sizeof(Vec3f), points.data());
   glDrawArrays(GL_POINTS, 0, getNumPoints());
