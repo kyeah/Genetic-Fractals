@@ -21,7 +21,8 @@ void initRNG() {
   ifstream fd("/dev/urandom");
   int seed;
   fd.read(reinterpret_cast<char*>(&seed), sizeof(seed));
-  cout << seed << endl;
+
+  cout << "RNG Seed: " << seed << endl;
   rng.seed(seed);
   rngPrepared = 1;
 }
