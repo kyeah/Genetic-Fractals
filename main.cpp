@@ -97,7 +97,8 @@ int main(int argc, char** argv){
   glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA);
   glClearColor(0, 0, 0, 0);
 
-  fractals.push_back(AttractorFractal("sin( -1.4 * y ) + cos( -1.4 * x )", "sin( 1.6 * x ) + 0.7 * cos( 1.6 * y )"));
+  fractals.push_back(CliffordAttractor("sin( a * y ) + c * cos(a * x)", "sin(b * x) + d * cos(b * y)"));
+  //fractals.push_back(AttractorFractal("sin( -1.4 * y ) + cos( -1.4 * x )", "sin( 1.6 * x ) + 0.7 * cos( 1.6 * y )"));
   //  fractals.push_back(AttractorFractal("(1 * x) - (0.1 * y)", "(0.1 * x) + (0.99 * y)"));
 
   Vec4d bounds = fractals[0].getBounds();

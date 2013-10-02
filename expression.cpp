@@ -5,6 +5,8 @@
 #include <stack>
 #include <cmath>
 
+#include <fcntl.h>
+
 #include "libs/expressionParser.h"
 #include "expression.h"
 
@@ -26,16 +28,6 @@ Expression::Expression(string infixExpression, vector<string> consts, vector<str
 
   infixStringToRPN(infixExpression, &rpnTokens);
   createTree(rpnTokens);
-  constructConstants();
-}
-
-void Expression::constructConstants() {
-  
-
-}
-
-void Expression::mutateConstants() {
-
 }
 
 void Expression::createTree(vector<string> tokens) {

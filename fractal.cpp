@@ -1,4 +1,5 @@
 #include "fractal.h"
+#include "rng.h"
 
 #ifdef _WIN32
 #include <windows.h>
@@ -48,11 +49,41 @@ void AttractorFractal::paint() {
     calculate();
   
   glColor4f(1,1,1, ALPHA); 
-    
+
   glEnableClientState(GL_VERTEX_ARRAY);
   glVertexPointer(3, GL_FLOAT, sizeof(Vec3f), points.data());
   glDrawArrays(GL_POINTS, 0, getNumPoints());
 
   // deactivate vertex arrays after drawing
   glDisableClientState(GL_VERTEX_ARRAY);
+}
+
+void CliffordAttractor::constructConstants() {
+  //  while (1) {
+  for (int i = 0; i < expressionX->numConsts; i++)  {
+    expressionX->constVals.push_back( gen_random_float() );
+    cout << "x " << i << "= " << expressionX->constVals[i] << endl;
+  }
+  for (int i = 0; i < expressionY->numConsts; i++) {
+    expressionY->constVals.push_back( gen_random_float() );
+    cout << "y " << i << "= " << expressionY->constVals[i] << endl;
+  }
+
+    /*
+    double x = 0;
+    double y = 0;
+
+    int good = 100;
+    for (int i = 0; i < 100; i++) {
+      vector<double> vals{x,y};
+      double nx = expressionX->evaluate(vals);
+      double ny = expressionY->evaluate(vals);
+
+      double d = pow(x-nx, 2) + pow(y-ny, 2);
+      }*/
+    //}
+}
+
+void CliffordAttractor::mutateConstants() {
+
 }

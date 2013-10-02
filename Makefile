@@ -33,7 +33,7 @@ main.o: main.cpp expression.h fractal.h common.h
 expression.o: expression.cpp expression.h libs/expressionParser.h
 	${CC} -c ${CFLAGS} $(INCLUDE) expression.cpp
 
-fractal.o: fractal.cpp fractal.h vec.h types.h common.h
+fractal.o: fractal.cpp fractal.h vec.h types.h common.h rng.h
 	${CC} -c ${CFLAGS} $(INCLUDE) fractal.cpp
 
 expressionParser.o: libs/expressionParser.cpp libs/expressionParser.h

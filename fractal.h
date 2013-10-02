@@ -43,8 +43,8 @@ class AttractorFractal {
   
 };
 
-class CliffordAttractor : public AttractorFractal {
-  
+class CliffordAttractor : public AttractorFractal {  
+
  public:
  CliffordAttractor(string x, string y) : AttractorFractal() {
     vector<string> consts = {"a", "b", "c", "d"};
@@ -54,10 +54,12 @@ class CliffordAttractor : public AttractorFractal {
     expressionY = new Expression(y, consts, vars);
     minX = minY = INT_MAX;
     maxX = maxY = INT_MIN;
+    constructConstants();
     calculate();
   }
 
-  void mutateConsts();
+  void constructConstants();
+  void mutateConstants();
 };
 
 #endif
