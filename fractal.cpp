@@ -60,14 +60,19 @@ void AttractorFractal::paint() {
 
 void CliffordAttractor::constructConstants() {
   //  while (1) {
-  for (int i = 0; i < expressionX->numConsts; i++)  {
-    expressionX->constVals.push_back( gen_random_float() );
-    cout << "x " << i << "= " << expressionX->constVals[i] << endl;
-  }
-  for (int i = 0; i < expressionY->numConsts; i++) {
-    expressionY->constVals.push_back( gen_random_float() );
-    cout << "y " << i << "= " << expressionY->constVals[i] << endl;
-  }
+  expressionX->constVals.clear();
+  expressionY->constVals.clear();
+  
+  for (int i = 0; i < expressionX->numConsts; i++) 
+    expressionX->constVals.push_back( gen_random_float(-PI, 3*PI) );
+
+  for (int i = 0; i < expressionY->numConsts; i++)
+    expressionY->constVals.push_back( gen_random_float(-PI, 3*PI) );
+
+  cout << "ExpressionX: ";
+  expressionX->printRPN();
+  cout << "ExpressionY: ";
+  expressionY->printRPN();
 
     /*
     double x = 0;
@@ -85,5 +90,7 @@ void CliffordAttractor::constructConstants() {
 }
 
 void CliffordAttractor::mutateConstants() {
-
+  constructConstants();
+  points.clear();
+  calculate();
 }

@@ -6,7 +6,8 @@
 
 using namespace std;
 
-vector<AttractorFractal> fractals;
+vector<CliffordAttractor> fractals;
+//vector<AttractorFractal> fractals;
 
 //****************************************
 GLfloat* calculateColor(GLfloat u, GLfloat v){
@@ -26,24 +27,40 @@ GLfloat* calculateColor(GLfloat u, GLfloat v){
 
 //****************************************
 void Repaint() {
+  int screen_width = glutGet(GLUT_SCREEN_WIDTH);
+  int screen_height = glutGet(GLUT_SCREEN_HEIGHT);
+
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);  // clear the screen buffer
-  for (int i = 0; i < fractals.size(); i++) {
-    fractals[i].paint();
+
+  int size = fractals.size();
+  if (size == 1) {
+    glViewport(0, 0, screen_width, screen_height);
+    fractals[0].paint();
+  } else {
+    //    for (int i = 0; i <= size / 2; i++) {
+      //      for (int j = 0; j < (size+1) / 2; j++) {
+        //        glViewport(j*screen_width/((size+1)/2),i*screen_height/(size), screen_width/((size+1)/2), screen_height/(size));
+    // glOrtho(stuff stuff bounds stuff stuff)
+    for (int i = 0; i < size; i++) {
+        fractals[i].paint();
+    }
   }
   glutSwapBuffers(); 
 }
 
 //****************************************
 void Reshape(int w, int h){ // function called when window size is changed
-  //  stepX = (maxX-minX)/(GLfloat)w; // calculate new value of step along X axis
-  //  stepY = (maxY-minY)/(GLfloat)h; // calculate new value of step along Y axis
   glViewport (0, 0, (GLsizei)w, (GLsizei)h); // set new dimension of viewable screen
-  glutPostRedisplay(); // repaint the window
+  glutPostRedisplay();
 }
 
 //****************************************
 void Keyboard(unsigned char key, int x, int y){ 
   switch(key){
+  case 32: // Spacebar
+    fractals[0].mutateConstants();
+    glutPostRedisplay();
+    break;
   case 'F': 
   case 'f':
     if(fullScreen){
@@ -98,6 +115,7 @@ int main(int argc, char** argv){
   glClearColor(0, 0, 0, 0);
 
   fractals.push_back(CliffordAttractor("sin( a * y ) + c * cos(a * x)", "sin(b * x) + d * cos(b * y)"));
+  //  fractals.push_back(CliffordAttractor("sin( a * y ) + c * cos(a * x)", "sin(b * x) + d * cos(b * y)"));
   //fractals.push_back(AttractorFractal("sin( -1.4 * y ) + cos( -1.4 * x )", "sin( 1.6 * x ) + 0.7 * cos( 1.6 * y )"));
   //  fractals.push_back(AttractorFractal("(1 * x) - (0.1 * y)", "(0.1 * x) + (0.99 * y)"));
 
@@ -126,11 +144,13 @@ int main(int argc, char** argv){
   glutInitWindowSize(window_width, window_height);
   windowID = glutCreateWindow("Aesthetic Fractals");
 
+  // Enable Blending for transparency
   glShadeModel(GL_SMOOTH);
   glEnable(GL_BLEND);
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
   //  glEnable(GL_DEPTH_TEST);
-  glViewport (0, 0, (GLsizei) window_width, (GLsizei) window_height);
+  
+  glViewport (0, 0, (GLsizei) window_width/2, (GLsizei) window_height/2);
   glMatrixMode (GL_PROJECTION);
   glLoadIdentity();
 
