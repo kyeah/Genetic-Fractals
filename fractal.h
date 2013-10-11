@@ -5,7 +5,7 @@
 
 #include "expression.h"
 #include "vec.h"
-
+#include "bb.h"
 
 class AttractorFractal {
  protected:
@@ -13,6 +13,7 @@ class AttractorFractal {
   Expression *expressionY;
 
   double minX, minY, maxX, maxY;  
+  BoundingBox bb;
   bool isCalculated;
   vector<Vec3f> points;
 
@@ -24,22 +25,21 @@ class AttractorFractal {
 
     expressionX = new Expression(x, vector<string>(), vars);
     expressionY = new Expression(y, vector<string>(), vars);
-    minX = minY = INT_MAX;
-    maxX = maxY = INT_MIN;
+    clear();
     calculate();
   }
   
  AttractorFractal(Expression* ex, Expression* ey): expressionX(ex), expressionY(ey) {
-    minX = minY = INT_MAX;
-    maxX = maxY = INT_MIN;
+    clear();
     calculate();
   }
-  
-  Vec4d getBounds() { return Vec4d{minX, maxX, minY, maxY }; }
+
+  BoundingBox getbb() { return bb; }
   bool isReady() { return isCalculated; } 
   int getNumPoints() { return points.size(); }
   void calculate();
   void paint();
+  void clear();
   
 };
 
@@ -49,11 +49,11 @@ class CliffordAttractor : public AttractorFractal {
  CliffordAttractor(string x, string y) : AttractorFractal() {
     vector<string> consts = {"a", "b", "c", "d"};
     vector<string> vars = {"x", "y"};
-    
+
     expressionX = new Expression(x, consts, vars);
     expressionY = new Expression(y, consts, vars);
-    minX = minY = INT_MAX;
-    maxX = maxY = INT_MIN;
+
+    clear();
     constructConstants();
     calculate();
   }

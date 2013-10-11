@@ -4,6 +4,7 @@
 #include <unordered_set>
 #include <string>
 #include <vector>
+#include <stdlib.h>
 
 using namespace std;
 
@@ -30,7 +31,7 @@ class Node {
     } else {
       char* fail;
       long l = strtol(value.c_str(), &fail, 10);
-      type = (*fail ? TYPE_VAR : TYPE_NUM);
+      type = (fail ? TYPE_VAR : TYPE_NUM);
     }
   }
   

@@ -5,7 +5,7 @@ CC = g++
 CFLAGS = -g -std=c++11   # Use -std=c++0x for versions of gcc and g++ <4.7
 INCLUDE =
 LIBDIR =
-LIBS = -lglut -lGLU -lm
+LIBS = -lglut -lGLU -lm -lGL  # Usually safe to remove lGL if compiler starts complaining 
 
 ###########################################################
 # Options if compiling on Mac
@@ -14,7 +14,7 @@ ifeq ($(UNAME), Darwin)
 CC = g++
 CFLAGS = -D__MAC__ -std=c++11 -stdlib=libc++
 INCLUDE = 
-LIBDIR = -L/lusr/X11/lib
+LIBDIR = -L/usr/X11/lib
 LIBS = -framework OpenGL -framework GLUT
 endif
 

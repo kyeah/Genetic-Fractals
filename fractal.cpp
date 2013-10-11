@@ -41,6 +41,8 @@ void AttractorFractal::calculate() {
     points.push_back(p);
   }
 
+  bb.min = Vec3f::makeVec(minX, minY, 0);
+  bb.max = Vec3f::makeVec(maxX, maxY, 0);
   isCalculated = true;
 }
 
@@ -56,6 +58,12 @@ void AttractorFractal::paint() {
 
   // deactivate vertex arrays after drawing
   glDisableClientState(GL_VERTEX_ARRAY);
+}
+
+void AttractorFractal::clear() {
+  points.clear();
+  minX = minY = INT_MAX;
+  maxX = maxY = INT_MIN;
 }
 
 void CliffordAttractor::constructConstants() {
@@ -91,6 +99,6 @@ void CliffordAttractor::constructConstants() {
 
 void CliffordAttractor::mutateConstants() {
   constructConstants();
-  points.clear();
+  clear();
   calculate();
 }
