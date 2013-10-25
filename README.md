@@ -3,8 +3,7 @@ Genetic Fractals
 
 A research tool studying the generation and evolution of aesthetically-pleasing fractals. It uses crowd-sourced testing along with observational patterns in the mathematical structure of attractor fractals to find optimal constants and equations.
 
-Dependencies
-=============
+### Dependencies
 
         sudo apt-get install libglu1-mesa-dev freeglut3-dev mesa-common-dev libglew-dev
 
