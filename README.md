@@ -5,7 +5,7 @@ A research tool studying the generation and evolution of aesthetically-pleasing 
 
 ### Dependencies
 
-        sudo apt-get install libglu1-mesa-dev freeglut3-dev mesa-common-dev libglew-dev
+        sudo apt-get install libglu1-mesa-dev freeglut3-dev mesa-common-dev libglew-dev libpng-dev
 
 Usage
 ============

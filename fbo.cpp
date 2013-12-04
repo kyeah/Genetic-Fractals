@@ -1,7 +1,8 @@
 #include <iostream>
 
 #include "fbo.h"
-#include "libs/libpng-1.2.50/png.h"
+#include <png.h>
+//#include "libs/libpng-1.2.50/png.h"
 
 int image_width = 1024, image_height = 1024;
 GLuint framebuffer;

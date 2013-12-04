@@ -1,6 +1,7 @@
 #ifndef __FBO_H__
 #define __FBO_H__
 #include <string>
+#include <png.h>
 #include "common.h"
 
 using namespace std;
