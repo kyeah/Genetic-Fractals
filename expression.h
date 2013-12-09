@@ -57,6 +57,8 @@ class Node {
   Node *getRight() { return right; }
   
   bool isLeaf() { return !left && !right; }
+  bool isVar() { return type == TYPE_VAR; }
+  bool isNum() { return type == TYPE_NUM; }
   bool isOp() { return isUnaryOp() || isBinaryOp(); }
   bool isUnaryOp() { return type == TYPE_UNARY; }
   bool isBinaryOp() { return type == TYPE_BINARY; }
