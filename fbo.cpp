@@ -44,14 +44,14 @@ void ExternalRenderer::deleteRenderBuffer(GLuint *renderbuffer) {
 }
 
 void ExternalRenderer::outputToImage(string name) {
-  cout << "saving img" << endl;
+  string filename = name + ".png";
+  cout << "saving img to " << filename << endl;
 
   glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
   int bytes = image_width*image_height*3; //Color space is RGB
   GLubyte *buffer = (GLubyte *)malloc(bytes);
   glReadPixels(0, 0, image_width, image_height, GL_RGB, GL_UNSIGNED_BYTE, buffer);
 
-  string filename = name + ".png";
   saveToPNG(filename, buffer);
   free(buffer);
 

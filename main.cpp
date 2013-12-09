@@ -1,5 +1,7 @@
 #include <cstring>
 #include <iostream>
+#include <sstream>
+#include <iomanip>
 
 #include "common.h"
 #include "expression.h"
@@ -8,7 +10,7 @@
 
 using namespace std;
 
-GLfloat minX = -2.2f, maxX = 0.8f, minY = -1.5f, maxY = 1.5; // complex plane boundaries                 
+GLfloat minX = -2.2f, maxX = 0.8f, minY = -1.5f, maxY = 1.5; // complex plane boundaries
 const int paletteSize = 128;
 GLfloat palette[paletteSize][3];
 
@@ -64,11 +66,14 @@ void Repaint() {
   int size = fractals.size();
   for (int i = 0; i < size; i++) {
     adjustBounds(fractals[i]);
+    glRotatef(2, 0,1,0);
     fractals[i].paint();
   }
-
+  
   glFlush();
   glutSwapBuffers();
+  
+  ExternalRenderer::outputToImage("fractal/test1");
 }
 
 //****************************************
@@ -81,7 +86,7 @@ void resize() {
   glutReshapeWindow(window_width,window_height); // sets default window size
   GLsizei windowX = (glutGet(GLUT_SCREEN_WIDTH)-window_width)/2;
   GLsizei windowY = (glutGet(GLUT_SCREEN_HEIGHT)-window_height)/2;
-  glutPositionWindow(windowX, windowY); // centers window on the screen  
+  glutPositionWindow(windowX, windowY); // centers window on the screen
 }
 
 void resize(int w, int h) {
@@ -102,7 +107,7 @@ Vec3f arcSnap(float x, float y) {
   float mag = sqrt(mag2);
 
   if (mag > 1) {
-    x = x*0.999 / mag;  // mult by .999 to account for edge cases of rounding up                                     
+    x = x*0.999 / mag;  // mult by .999 to account for edge cases of rounding up
     y = y*0.999 / mag;
   }
 
@@ -120,10 +125,10 @@ void MouseButton(int button, int state, int x, int y) {
     arcmouse_y = arc_coords[1];
     arcmouse_z = arc_coords[2];
 
-    left_mouse_button = !state;  // state==0 if down                                                                 
+    left_mouse_button = !state;  // state==0 if down
   }
   if (button == GLUT_RIGHT_BUTTON) {
-    right_mouse_button = !state;  // state==0 if down                                                                
+    right_mouse_button = !state;  // state==0 if down
   }
 
   mouse_x = x, mouse_y = y;
@@ -135,18 +140,18 @@ void MouseMotion(int x, int y) {
   y = window_height - y;
 
   if (left_mouse_button) {
-    // Rotation                                                                                                     
+    // Rotation
     Vec3f arc_coords = arcSnap(x, y);
     float fx = arc_coords[0];
     float fy = arc_coords[1];
     float fz = arc_coords[2];
 
-    // Find rotational axis                                                                                        
+    // Find rotational axis
     float normal_x = arcmouse_y*fz - arcmouse_z*fy;
     float normal_y = arcmouse_z*fx - arcmouse_x*fz;
     float normal_z = arcmouse_x*fy - arcmouse_y*fx;
 
-    // Find rotational angle                                                                                        
+    // Find rotational angle
     float ax = sqrt(normal_x*normal_x +
                     normal_y*normal_y +
                     normal_z*normal_z);
@@ -162,7 +167,7 @@ void MouseMotion(int x, int y) {
 
     arcmouse_x = fx, arcmouse_y = fy, arcmouse_z = fz;
   } else if (right_mouse_button && y && mouse_y) {
-    // Zoom: Multiplies current zoom by ratio between initial and current y                                         
+    // Zoom: Multiplies current zoom by ratio between initial and current y
     float smy = mouse_y+window_height;
     float sy = y+window_height;
     float dy;
@@ -181,14 +186,14 @@ void MouseMotion(int x, int y) {
 }
 
 
-void Keyboard(unsigned char key, int x, int y){ 
+void Keyboard(unsigned char key, int x, int y){
   switch(key){
   case 32: // Spacebar
     fractals[0].mutateConstants();
     zoom = 1;
     glutPostRedisplay();
     break;
-  case 'F': 
+  case 'F':
   case 'f':
     if(fullScreen){
       resize();
@@ -196,7 +201,7 @@ void Keyboard(unsigned char key, int x, int y){
     }
     else{
       fullScreen = true;
-      glutFullScreen(); 
+      glutFullScreen();
     }
     glutPostRedisplay();
     break;
@@ -230,14 +235,14 @@ void createPalette(){
   for(int i=0; i < 32; i++){
     palette[96+i][0] = (GLfloat)0;
     palette[96+i][1] = (255-8*i)/(GLfloat)255;
-    palette[96+i][2] = (8*i)/(GLfloat)255; 
+    palette[96+i][2] = (8*i)/(GLfloat)255;
   }
 }
 
 void glutInit() {
   glutFullScreen();
   fullScreen=true;
-  
+
   // set the event handling methods
   glutDisplayFunc(Repaint);
   glutReshapeFunc(Reshape);
@@ -261,7 +266,7 @@ int main(int argc, char** argv){
   GLsizei windowY = (glutGet(GLUT_SCREEN_HEIGHT)-window_height)/2;
   glutInitWindowPosition(windowX, windowY);
   glutInitWindowSize(window_width, window_height);
-  
+
   windowID = glutCreateWindow("Aesthetic Fractals");
   glClearColor(0,0,0,1);
 
@@ -274,10 +279,10 @@ int main(int argc, char** argv){
   // Enable GLEW library for External rendering
   GLenum err = glewInit();
   if (GLEW_OK != err) {
-      fprintf(stderr, "Error: %s\n", glewGetErrorString(err));
-      exit(0);
+    fprintf(stderr, "Error: %s\n", glewGetErrorString(err));
+    exit(0);
   }
-  
+
   ExternalRenderer::setImageWidth(window_width);
   ExternalRenderer::setImageHeight(window_height);
 
@@ -314,8 +319,8 @@ int main(int argc, char** argv){
         ca.saveToFile(argv[i]);
         fractals.clear();
       }
-      
-      ExternalRenderer::deleteRenderBuffer(&renderbuffer);      
+
+      ExternalRenderer::deleteRenderBuffer(&renderbuffer);
 
     } else {
       for (int i = 1; i <= argc - 6; i+=6) {
@@ -324,21 +329,23 @@ int main(int argc, char** argv){
           i++;
         }
         if (strcmp(argv[i],"-s") == 0) {
-          resize(stoi(argv[++i]), stoi(argv[++i]));
+          int width = stoi(argv[++i]);
+          int height = stoi(argv[++i]);
+          resize(width, height);
           i++;
         }
-        
+
         CliffordAttractor ca(argv[i], argv[i+1], argv[i+2], argv[i+3], argv[i+4], argv[i+5]);
         fractals.push_back(ca);
       }
       glutInit();
     }
   } else {
-    fractals.push_back(CliffordAttractor("sin(-1.4 * y) + cos(-1.4 * x)", "sin(1.6 * x) + 0.7 * cos(1.6 * y)", "0", "x", "y", "z"));
-    //fractals.push_back(CliffordAttractor("sin( a * y ) + c * cos(a * x)", "sin(b * x) + d * cos(b * y)"));
+    //fractals.push_back(CliffordAttractor("sin(-1.4 * y) + cos(-1.4 * x)", "sin(1.6 * x) + 0.7 * cos(1.6 * y)", "x", "x", "y", "z"));
+    fractals.push_back(CliffordAttractor("sin( a * y ) + c * cos(a * x)", "sin(b * x) + d * cos(b * y)"));
     glutInit();
   }
-  
+
   return 0;
 }
 
