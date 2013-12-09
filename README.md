@@ -12,18 +12,27 @@ This program is meant to be used in conjunction with Tyler Yates' [Java Evolutio
 Usage
 ============
 
+### Rendering Mode
+
 To open the single-fractal viewer with a randomized Clifford Attractor:
 
         make
-        ./aesthetics [Optional Infix Equation Representation with vars {x,y,z}, consts{a,b,c,d}]
+        ./aesthetics
+
+You can also provide optional infix equation representations with vars {x,y,z}, consts {a,b,c,d}.
+
+        ./aesthetics [EXPR_X EXPR_Y EXPR_Z EXPR_R EXPR_G EXPR_B]
+        ./aesthetics "sin(-1.4 * y) + cos(-1.4 * x)" "sin(1.6 * x) + 0.7 * cos(1.6 * y)" "x" "x" "y" "z"
 
 Controls:
 * f - Toggle Fullscreen
 * s - Save image to test.ppm
 
-You can also call the program to draw and save fractals offscreen with optional parameters:
+### Image Save Mode
 
-        .aesthetics -save [ -p PRECISION_POINTS ] [ -s WIDTH HEIGHT ] IMG_NAME EXPR_X EXPR_Y EXPR_Z EXPR_R EXPR_G EXPR_B
+In addition to rendering mode, you can call the program to draw and save fractals offscreen with optional parameters:
+
+        ./aesthetics -save [ -p PRECISION_POINTS ] [ -s WIDTH HEIGHT ] IMG_NAME EXPR_X EXPR_Y EXPR_Z EXPR_R EXPR_G EXPR_B
 
 -------------------------------
 
