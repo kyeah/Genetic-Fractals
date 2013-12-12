@@ -1,0 +1,334 @@
+#ifndef GLEW_STATIC
+#define GLEW_STATIC
+#endif
+
+#include <GL\wglew.h>
+
+#include "GLTools.h"
+#include "GLShaderManager.h"
+
+class Application
+{
+public:
+  void Start(int width = 800, int height = 600);
+  void End();
+
+  void MainLoop();
+
+  bool running;
+  const TCHAR *name;
+} app;
+
+class WindowManager
+{
+  HINSTANCEhInstance;
+
+  WNDPROCwndProc;
+
+  WNDCLASSwndClass;
+
+  DWORDwndStyle;
+  DWORDextStyle;
+
+  RECTdimensions;
+  boolfullScreen;
+
+public:
+  HWNDhWnd;
+
+  void CoreInit(int width, int height);
+  void Start(int width, int height);
+  void End();
+
+  void FullStart(int width, int height) 
+  {
+    CoreInit(width, height), 
+      Start(width, height);
+  }
+
+  void Restart() 
+  {
+    // Destroy the window
+    if(hWnd)
+      {
+        DestroyWindow(hWnd);
+        hWnd = NULL;
+      }
+
+    // Recreate Window
+    Start(
+          dimensions.right - dimensions.left, 
+          dimensions.bottom - dimensions.top);
+  }
+
+  void Show()
+  {
+    ShowWindow( hWnd, SW_SHOW ),
+      SetForegroundWindow( hWnd ),
+      SetFocus( hWnd );
+  }
+} windowManager;
+
+class GraphicsManager
+{
+  HGLRCrenderingContext;
+  HDCdeviceContext;
+
+  GLBatchtriangleBatch;
+  GLShaderManagershaderManager;
+
+  boolsceneReady;
+
+public:
+  void Start(int width, int height);
+  void End();
+
+  void SetupScene();
+  void RenderScene();
+
+  void ChangeSize(int width, int height);
+
+  void CheckErrors(GLuint progName = 0);
+} graphicsManager;
+
+///////////////////////////////////////////////////////////////////////////////
+// Main program function, called on startup
+// First setup the window and OGL state, then enter rendering loop
+int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance,
+                    PSTR szCmdLine, int iCmdShow)
+{
+  app.Start();
+
+  graphicsManager.SetupScene();
+  app.MainLoop();
+
+  app.End();
+  return 0;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// Callback functions to handle all window functions this app cares about.
+// Once complete, pass message on to next app in the hook chain.
+LRESULT CALLBACK WndProc(HWNDhWnd,// Handle For This Window
+                         UINTuMsg,// Message For This Window
+                         WPARAMwParam,// Additional Message Information
+                         LPARAMlParam)// Additional Message Information
+{
+  // Handle relevant messages individually
+  switch(uMsg)
+    {
+    case WM_SIZE:
+      graphicsManager.ChangeSize(LOWORD(lParam),HIWORD(lParam));
+      graphicsManager.RenderScene();
+      break;
+    case WM_CLOSE:
+      app.running = false;
+      PostQuitMessage(0);
+      return 0;
+    default:
+      // Nothing to do now
+      break;
+    }
+
+  // Pass All Unhandled Messages To DefWindowProc
+  return DefWindowProc(hWnd,uMsg,wParam,lParam);
+}
+
+void Application::Start(int width, int height)
+{
+  running = true;
+  name = TEXT("Triangle");
+
+  windowManager.FullStart(width, height);
+  graphicsManager.Start(width, height);
+}
+
+void Application::End()
+{
+  graphicsManager.End();
+  windowManager.End();
+}
+
+void Application::MainLoop()
+{
+  while(running)
+    {
+      MSGmsg;
+
+      // Check for waiting mssgs
+      if (PeekMessage(&msg,NULL,0,0,PM_REMOVE))
+        {
+          if (msg.message==WM_QUIT)
+            {
+              running = false;
+            }
+          else
+            {
+              // Deal with mssgs
+              TranslateMessage(&msg);
+              DispatchMessage(&msg);
+            }
+        }
+      else
+        {
+          graphicsManager.RenderScene();   
+        }
+
+      Sleep(0);
+    }
+}
+
+void WindowManager::CoreInit(int width, int height)
+{
+  hInstance = GetModuleHandle(NULL);
+  wndProc = (WNDPROC)WndProc;
+
+  extStyle = WS_EX_APPWINDOW | WS_EX_WINDOWEDGE;
+  wndStyle = WS_OVERLAPPEDWINDOW;
+
+  if(MessageBox(NULL, TEXT("Would you like to run in Fullscreen Mode?"), app.name, MB_YESNO|MB_ICONEXCLAMATION)==IDYES)
+    {
+      // Prepare for a mode set to the requested resolution
+      DEVMODE dm;
+      memset (&dm, 0, sizeof(dm));
+
+      dm.dmSize= sizeof(dm);
+      dm.dmPelsWidth= width;
+      dm.dmPelsHeight= height;
+      dm.dmBitsPerPel= 32;
+      dm.dmFields= DM_BITSPERPEL|DM_PELSWIDTH|DM_PELSHEIGHT;
+
+      long error = ChangeDisplaySettings(&dm, CDS_FULLSCREEN);
+        
+      if (error != DISP_CHANGE_SUCCESSFUL)
+        {
+          // Oops, something went wrong, let the user know.
+          if (MessageBox(NULL, TEXT("Could not set fullscreen mode.\n\
+                Your video card may not support the requested mode.\n\
+                Use windowed mode instead?"), 
+                         app.name, MB_YESNO|MB_ICONEXCLAMATION) == IDYES)
+            {
+              fullScreen = false;
+              extStyle = WS_EX_APPWINDOW | WS_EX_WINDOWEDGE;
+              wndStyle = WS_OVERLAPPEDWINDOW;
+            }
+          else
+            {
+              MessageBox(NULL, TEXT("Program will exit."), TEXT("ERROR"), MB_OK|MB_ICONSTOP);
+              app.running = false;
+            }
+        }
+      else
+        {
+          // Mode set passed, setup the styles for fullscreen
+          fullScreen = true;
+          extStyle  = WS_EX_APPWINDOW;
+          wndStyle = WS_POPUP;
+          ShowCursor(FALSE);
+        }
+    }
+
+  // Setup window width and height
+  dimensions.left   = 0;
+  dimensions.right  = width;
+  dimensions.top    = 0;
+  dimensions.bottom = height;
+
+  AdjustWindowRectEx(&dimensions, wndStyle, FALSE, extStyle);
+
+  //Adjust for adornments
+  width= dimensions.right - dimensions.left;
+  height= dimensions.bottom - dimensions.top;
+
+  // setup window class
+  wndClass.lpszClassName = TEXT("OGL_WINCLASS");          // Set the name of the Class
+  wndClass.lpfnWndProc   = wndProc;// Set pointer to WndProc
+  wndClass.hInstance = hInstance;// Use this module for the module handle
+  wndClass.hCursor   = LoadCursor(NULL, IDC_ARROW);// Pick the default mouse cursor
+  wndClass.hIcon = LoadIcon(NULL, IDI_WINLOGO);// Pick the default windows icons
+  wndClass.hbrBackground = NULL;// No Background
+  wndClass.lpszMenuName  = NULL;// No menu for this window
+  wndClass.style = CS_HREDRAW | CS_OWNDC |// set styles for this class, specifically to catch
+    CS_VREDRAW; // window redraws, unique DC, and resize
+  wndClass.cbClsExtra    = 0;// Extra class memory
+  wndClass.cbWndExtra    = 0;// Extra window memory
+
+  // Register the newly defined class
+  if(!RegisterClass( &wndClass ))
+    {
+      app.running = false;
+      MessageBox(NULL,
+                 TEXT("!!! An error occured creating an OpenGL window. (wndClass registration failure)\n"),
+                 TEXT("ERROR"),
+                 MB_OK|MB_ICONEXCLAMATION);
+    }
+}
+
+void WindowManager::Start(int width, int height)
+{
+  // Create window
+  hWnd = CreateWindowEx(extStyle,// Extended style
+                        TEXT("OGL_WINCLASS"),// class name
+                        app.name,// window name
+                            wndStyle |        
+                            WS_CLIPSIBLINGS | 
+                        WS_CLIPCHILDREN,// window stlye
+                        0,// window position, x
+                        0,// window position, y
+                        width,// height
+                        height,// width
+                        NULL,// Parent window
+                        NULL,// menu
+                        hInstance,// instance
+                        NULL);// pass this to WM_CREATE
+
+}
+
+void WindowManager::End()
+{
+  // Disable fullscreen
+  if (fullScreen)
+    {
+      ChangeDisplaySettings(NULL,0);
+      ShowCursor(TRUE);
+    }
+
+  // Destroy the window
+  if(hWnd)
+    {
+      DestroyWindow(hWnd);
+      hWnd = NULL;
+    }
+
+  // Delete the window class
+  UnregisterClass(TEXT("OGL_WINCLASS"), hInstance);
+  hInstance = NULL;
+  ShowCursor(TRUE);
+}
+
+void GraphicsManager::Start(int width, int height)
+{
+  sceneReady = false;
+
+  intnPixelFormat = NULL;
+  PIXELFORMATDESCRIPTOR pfd;
+
+  // now that we have a window, setup the pixel format descriptor
+  deviceContext = GetDC(windowManager.hWnd);
+
+  memset(&pfd, 0, sizeof(pfd));
+  pfd.nSize= sizeof(PIXELFORMATDESCRIPTOR);
+  pfd.nVersion= 1;
+  pfd.dwFlags= PFD_SUPPORT_OPENGL | PFD_DRAW_TO_WINDOW | PFD_GENERIC_ACCELERATED | PFD_DOUBLEBUFFER;
+  pfd.iPixelType= PFD_TYPE_RGBA;
+  pfd.cColorBits= 24;
+  pfd.cDepthBits= 16;
+
+  nPixelFormat = ChoosePixelFormat(deviceContext, &pfd);
+
+  // Set a dummy pixel format so that we can get access to wgl functions
+  SetPixelFormat( deviceContext, nPixelFormat, &pfd);
+
+  // Create OGL context and make it current
+  renderingContext = wglCreateContext( deviceContext );
+  wglMakeCurrent( deviceContext, renderingContext );
