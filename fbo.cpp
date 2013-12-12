@@ -54,8 +54,6 @@ void ExternalRenderer::outputToImage(string name) {
 
   saveToPNG(filename, buffer);
   free(buffer);
-
-  cout << "saved to " + filename << endl;
 }
 
 void PNGWriteData(png_structp png_ptr, png_bytep data, png_size_t length) {
@@ -67,12 +65,12 @@ bool saveToPNG(string filename, GLubyte *buffer) {
   FILE* out;
   out = fopen(filename.c_str(), "wb");
   if (out == NULL) {
-      cout << "Can't open screen capture file " << filename.c_str() << endl;
-      return false;
+    cout << "Can't open screen capture file " << filename.c_str() << endl;
+    return false;
   }
-
+  
   int rowStride = (image_width * 3 + 3) & ~0x3;
-
+  
   png_bytep* row_pointers = new png_bytep[image_height];
   for (int i = 0; i < image_height; i++)
     row_pointers[i] = (png_bytep) &buffer[rowStride * (image_height - i - 1)];
@@ -111,6 +109,8 @@ bool saveToPNG(string filename, GLubyte *buffer) {
   png_write_info(png_ptr, info_ptr);
   png_write_image(png_ptr, row_pointers);
   png_write_end(png_ptr, info_ptr);
+
+  cout << "saved to " + filename << endl;
 
   // Clean up everything . . .
   png_destroy_write_struct(&png_ptr, &info_ptr);
