@@ -278,6 +278,13 @@ int main(int argc, char** argv){
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
   //glEnable(GL_DEPTH_TEST);
 
+  // Enable GLEW library for External rendering
+  GLenum err = glewInit();
+  if (GLEW_OK != err) {
+    fprintf(stderr, "Error: %s\n", glewGetErrorString(err));
+    exit(0);
+  }
+
   ExternalRenderer::setImageWidth(window_width);
   ExternalRenderer::setImageHeight(window_height);
 
@@ -336,8 +343,8 @@ int main(int argc, char** argv){
       glutInit();
     }
   } else {
-    //fractals.push_back(CliffordAttractor("sin(-1.4 * y) + cos(-1.4 * x)", "sin(1.6 * x) + 0.7 * cos(1.6 * y)", "x", "x", "y", "z"));
-    fractals.push_back(CliffordAttractor("sin( a * y ) + c * cos(a * x)", "sin(b * x) + d * cos(b * y)"));
+    fractals.push_back(CliffordAttractor("sin(-1.4 * y) + cos(-1.4 * x)", "sin(1.6 * x) + 0.7 * cos(1.6 * y)", "x", "x", "y", "z"));
+    //fractals.push_back(CliffordAttractor("sin( a * y ) + c * cos(a * x)", "sin(b * x) + d * cos(b * y)"));
     glutInit();
   }
 
