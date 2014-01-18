@@ -36,6 +36,4 @@ In addition to rendering mode, you can call the program to draw and save fractal
 
 -------------------------------
 
-Visit https://bitbucket.org/terminex9/aestheticfractals for the most up-to-date version of our project, including the Java GUI.
-
 Kevin Yeh and Tyler Yates © 2013 (UT Freshman Research Initiative: Computational Intelligence)
