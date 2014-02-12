@@ -24,11 +24,14 @@ endif
 
 ###########################################################
 
-aesthetics: main.o expression.o expressionParser.o fractal.o fbo.o color.o
-	${CC} ${CFLAGS} $(INCLUDE) -o aesthetics main.o expression.o fractal.o expressionParser.o fbo.o color.o ${LIBDIR} ${LIBS}
+aesthetics: main.o mainWindow.o expression.o expressionParser.o fractal.o fbo.o color.o
+	${CC} ${CFLAGS} $(INCLUDE) -o aesthetics main.o mainWindow.o expression.o fractal.o expressionParser.o fbo.o color.o ${LIBDIR} ${LIBS}
 
 main.o: main.cpp expression.h fractal.h common.h
 	${CC} -c ${CFLAGS} $(INCLUDE) main.cpp
+
+mainWindow.o: mainWindow.cpp mainWindow.h
+	${CC} -c ${CFLAGS} $(INCLUDE) mainWindow.cpp
 
 expression.o: expression.cpp expression.h libs/expressionParser.h
 	${CC} -c ${CFLAGS} $(INCLUDE) expression.cpp
