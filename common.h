@@ -15,6 +15,7 @@
 //#include <GLFW/glfw3.h>
 #endif
 
+#include "fractal.h"
 #pragma hdrstop
 
 struct Color {
@@ -38,5 +39,7 @@ extern Color kBrown;
 extern Color kOrange;
 extern Color kBlack;
 extern Color kWhite;
+
+extern vector<CliffordAttractor> fractals;
 
 #endif

@@ -4,7 +4,29 @@
 #include "fractal.h"
 #include "fbo.h"
 
-createMainWindow(char* _name) {
+char* name;
+int windowID;
+
+int window_width, window_height;
+float window_aspect;
+bool fullScreen=false;
+
+// GLUT Utility Variables
+float zoom = 1;
+float mouse_x, mouse_y;
+float arcmouse_x, arcmouse_y, arcmouse_z;
+
+bool right_mouse_button= false;
+bool left_mouse_button = false;
+
+GLfloat rot_matrix[16] = {1, 0, 0, 0,
+                          0, 1, 0, 0,
+                          0, 0, 1, 0,
+                          0, 0, 0, 1};
+
+vector<CliffordAttractor> fractals;
+
+int createMainWindow(string _name) {
   window_width = glutGet(GLUT_SCREEN_WIDTH);
   window_height = glutGet(GLUT_SCREEN_HEIGHT);
   window_aspect = window_width / static_cast<float>(window_height);
@@ -17,7 +39,7 @@ createMainWindow(char* _name) {
   glutInitWindowPosition(windowX, windowY);
   glutInitWindowSize(window_width, window_height);
 
-  windowID = glutCreateWindow(_name);
+  windowID = glutCreateWindow(_name.c_str());
   glClearColor(0,0,0,1);
 
   // Enable Blending for transparency
@@ -28,6 +50,7 @@ createMainWindow(char* _name) {
 
   ExternalRenderer::setImageWidth(window_width);
   ExternalRenderer::setImageHeight(window_height);
+  return windowID;
 }
 
 /*
@@ -58,10 +81,10 @@ void adjustBounds(AttractorFractal f) {
 void Repaint() {
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-  int size = fractals->size();
+  int size = fractals.size();
   for (int i = 0; i < size; i++) {
-    adjustBounds((*fractals)[i]);
-    (*fractals)[i].paint();
+    adjustBounds(fractals[i]);
+    fractals[i].paint();
   }
 
   glFlush();
@@ -188,7 +211,7 @@ void MouseMotion(int x, int y) {
 void Keyboard(unsigned char key, int x, int y){
   switch(key){
   case 32:  // (Spacebar) Mutate fractal
-    (*fractals)[0].mutateConstants();
+    fractals[0].mutateConstants();
     zoom = 1;
     glutPostRedisplay();
     break;

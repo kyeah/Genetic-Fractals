@@ -17,9 +17,6 @@ const GLfloat radius = 5.0f;
 const int paletteSize = 128;
 GLfloat palette[paletteSize][3];
 
-vector<AttractorFractal> fractals;
-//vector<AttractorFractal> fractals;
-
 //****************************************
 /*
   Legacy palette generator for Mandelbrot Set
@@ -80,7 +77,7 @@ void error_callback(int error, const char* description)
 //****************************************
 int main(int argc, char** argv){
   glutInit(&argc, argv);
-  mainWindow = new MainWindow("Aesthetic Fractals", &fractals);
+  createMainWindow("Aesthetic Fractals");
 
   // Enable GLEW library for External rendering
   GLenum err = glewInit();
