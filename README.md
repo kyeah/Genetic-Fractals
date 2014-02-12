@@ -9,6 +9,10 @@ This program is meant to be used in conjunction with Tyler Yates' [Java Evolutio
 
         sudo apt-get install libglu1-mesa-dev freeglut3-dev mesa-common-dev libglew-dev libpng-dev
 
+### Building
+
+        run 'make' in libs/AntTweakBar/src/
+        run 'make' in root folder
 Usage
 ============
 
@@ -16,7 +20,6 @@ Usage
 
 To open the single-fractal viewer with a randomized Clifford Attractor:
 
-        make
         ./aesthetics
 
 You can also provide optional infix equation representations with vars {x,y,z}, consts {a,b,c,d}.

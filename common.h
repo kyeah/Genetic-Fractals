@@ -2,6 +2,7 @@
 #define __COMMON_H__
 
 #include <stdlib.h>
+#include <AntTweakBar.h>
 #ifdef _WIN32
 #include <windows.h>
 #endif

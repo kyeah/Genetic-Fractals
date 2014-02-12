@@ -3,8 +3,8 @@
 
 CC = g++
 CFLAGS = -g -std=c++11  # Use -std=c++0x for versions of gcc and g++ <4.7, c++11 otherwise
-INCLUDE =
-LIBDIR =
+INCLUDE = -Ilibs/AntTweakBar/include
+LIBDIR = -Llibs/AntTweakBar/lib
 LIBS = -lpng -lglut -lGLU -lm -lX11 -lGLEW -lGL #-lglfw3 -lX11 -lXi -lXxf86vm -lXrandr
 
 ###########################################################
