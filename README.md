@@ -25,8 +25,8 @@ To open the single-fractal viewer with a randomized Clifford Attractor:
 
 You can also provide optional infix equation representations with vars {x,y,z}, consts {a,b,c,d}.
 
-        ./aesthetics [EXPR_X EXPR_Y EXPR_Z EXPR_R EXPR_G EXPR_B]
-        ./aesthetics "sin(-1.4 * y) + cos(-1.4 * x)" "sin(1.6 * x) + 0.7 * cos(1.6 * y)" "x" "x" "y" "z"
+        ./aesthetics [ -p PRECISION POINTS] [EXPR_X EXPR_Y EXPR_Z EXPR_R EXPR_G EXPR_B]
+        ./aesthetics -p 100000 "sin(-1.4 * y) + cos(-1.4 * x)" "sin(1.6 * x) + 0.7 * cos(1.6 * y)" "x" "x" "y" "z"
 
 Controls:
 * f - Toggle Fullscreen
