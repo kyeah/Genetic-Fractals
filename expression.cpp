@@ -136,3 +136,18 @@ void Expression::printTreeRPN(Node *n) {
   printTreeRPN(n->getRight());
   cout << n->getValue() << " ";
 }
+
+void Expression::setString(string s) {
+  infixString = s;
+
+  root = NULL;
+  vector<string> rpnTokens;
+
+  // Represent expression with a parse tree
+  infixStringToRPN(s, &rpnTokens);
+  createTree(rpnTokens);  
+}
+
+string Expression::getString() const {
+  return infixString;
+}

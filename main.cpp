@@ -12,7 +12,7 @@
 
 using namespace std;
 
-bool rendering = false;
+bool rendering = true;
 int window_width, window_height;
 
 // Legacy variables for Mandelbrot Set

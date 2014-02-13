@@ -43,6 +43,20 @@ class AttractorFractal {
     calculate();
   }
 
+  static void TW_CALL setXStr(const void *value, void *clientData);
+  static void TW_CALL setYStr(const void *value, void *clientData);
+  static void TW_CALL setZStr(const void *value, void *clientData);
+  static void TW_CALL setRStr(const void *value, void *clientData);
+  static void TW_CALL setGStr(const void *value, void *clientData);
+  static void TW_CALL setBStr(const void *value, void *clientData);
+
+  static void TW_CALL getXStr(void *value, void *clientData);
+  static void TW_CALL getYStr(void *value, void *clientData);
+  static void TW_CALL getZStr(void *value, void *clientData);
+  static void TW_CALL getRStr(void *value, void *clientData);
+  static void TW_CALL getGStr(void *value, void *clientData);
+  static void TW_CALL getBStr(void *value, void *clientData);
+
   BoundingBox getbb() { return bb; }
   bool isReady() { return isCalculated; } 
   int getNumPoints() { return points.size(); }

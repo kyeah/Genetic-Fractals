@@ -86,6 +86,9 @@ class Expression {
   void printConstants();
   void printInfixString();
 
+  void setString(string s);
+  string getString() const;
+
   void createTree(vector<string> tokens);
   double evaluate(vector<double> values);
   double evalTree(Node *n, vector<double> values);

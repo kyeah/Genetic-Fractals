@@ -1,5 +1,4 @@
-#include "fractal.h"
-#include "rng.h"
+#include <AntTweakBar.h>
 
 #ifdef _WIN32
 #include <windows.h>
@@ -12,6 +11,9 @@
 #include <GL/glut.h>
 #endif
 
+#include "fractal.h"
+#include "rng.h"
+
 int PRECISION_POINTS = 1000000;
 float preAlphaVal = 90000 / (float)PRECISION_POINTS;
 float ALPHA = (preAlphaVal > 1 ? 1 : preAlphaVal);
@@ -22,6 +24,56 @@ void setPrecisionPoints(int points) {
   ALPHA = (preAlphaVal > 1 ? 1 : preAlphaVal);
 }
 
+void TW_CALL AttractorFractal::setXStr(const void *value, void *clientData) {
+  AttractorFractal *fractal = static_cast<AttractorFractal *>(clientData);
+  fractal->expressionX->setString(*static_cast<const string *>(value));
+}
+void TW_CALL  AttractorFractal::setYStr(const void *value, void *clientData) {
+  AttractorFractal *fractal = static_cast<AttractorFractal *>(clientData);
+  fractal->expressionY->setString(*static_cast<const string *>(value));
+}
+void TW_CALL  AttractorFractal::setZStr(const void *value, void *clientData) {
+  AttractorFractal *fractal = static_cast<AttractorFractal *>(clientData);
+  fractal->expressionZ->setString(*static_cast<const string *>(value));
+}
+void TW_CALL  AttractorFractal::setRStr(const void *value, void *clientData) {
+  AttractorFractal *fractal = static_cast<AttractorFractal *>(clientData);
+  fractal->expressionR->setString(*static_cast<const string *>(value));
+}
+void TW_CALL  AttractorFractal::setGStr(const void *value, void *clientData) {
+  AttractorFractal *fractal = static_cast<AttractorFractal *>(clientData);
+  fractal->expressionG->setString(*static_cast<const string *>(value));
+}
+void TW_CALL  AttractorFractal::setBStr(const void *value, void *clientData) {
+  AttractorFractal *fractal = static_cast<AttractorFractal *>(clientData);
+  fractal->expressionB->setString(*static_cast<const string *>(value));
+}
+
+void TW_CALL AttractorFractal::getXStr(void *value, void *clientData) {
+  const AttractorFractal *fractal = static_cast<const AttractorFractal *>(clientData);
+  *static_cast<string *>(value) = fractal->expressionX->getString();
+}
+void TW_CALL AttractorFractal::getYStr(void *value, void *clientData) {
+  const AttractorFractal *fractal = static_cast<const AttractorFractal *>(clientData);
+  *static_cast<string *>(value) = fractal->expressionY->getString();
+}
+void TW_CALL AttractorFractal::getZStr(void *value, void *clientData) {
+  const AttractorFractal *fractal = static_cast<const AttractorFractal *>(clientData);
+  *static_cast<string *>(value) = fractal->expressionZ->getString();
+}
+void TW_CALL AttractorFractal::getRStr(void *value, void *clientData) {
+  const AttractorFractal *fractal = static_cast<const AttractorFractal *>(clientData);
+  *static_cast<string *>(value) = fractal->expressionR->getString();
+}
+void TW_CALL AttractorFractal::getGStr(void *value, void *clientData) {
+  const AttractorFractal *fractal = static_cast<const AttractorFractal *>(clientData);
+  *static_cast<string *>(value) = fractal->expressionG->getString();
+}
+void TW_CALL AttractorFractal::getBStr(void *value, void *clientData) {
+  const AttractorFractal *fractal = static_cast<const AttractorFractal *>(clientData);
+  *static_cast<string *>(value) = fractal->expressionB->getString();
+}
+
 void AttractorFractal::calculate() {
   isCalculated = false;
 
@@ -29,7 +81,7 @@ void AttractorFractal::calculate() {
   float r, g, b;
   x = y = z = 0.0;
   r = g = b = 1.0;
-  
+
   vector<double> vals = {x, y, z, r, g, b};
   for (int i=0; i < PRECISION_POINTS; i++) {
     vals[0] = x;
@@ -42,9 +94,9 @@ void AttractorFractal::calculate() {
     if (expressionZ) {
       z = expressionZ->evaluate(vals);
       if (z < minZ) minZ = z;
-      if (z > maxZ) maxZ = z;      
+      if (z > maxZ) maxZ = z;
     }
-    
+
     if (x < minX) minX = x;
     if (x > maxX) maxX = x;
 
@@ -54,12 +106,12 @@ void AttractorFractal::calculate() {
     if (expressionR)
       r = expressionR->evaluate(vals);
 
-    if (expressionG) 
+    if (expressionG)
       g = expressionG->evaluate(vals);
 
-    if (expressionB) 
+    if (expressionB)
       b = expressionB->evaluate(vals);
-    
+
 
     Vec3f p = {(float)x, (float)y, (float)z};
     Vec4f c = {(float)r, (float)g, (float)b, ALPHA};
@@ -146,31 +198,31 @@ void CliffordAttractor::constructConstants() {
   for (int i = 0; i < consts.size(); i++) {
     constVals.push_back(gen_random_float(-PI, 3*PI));
   }
-  
-  for (int i = 0; i < expressionX->numConsts; i++) 
+
+  for (int i = 0; i < expressionX->numConsts; i++)
     expressionX->constVals.push_back( constVals[i] );
-  
+
   for (int i = 0; i < expressionY->numConsts; i++)
     expressionY->constVals.push_back( constVals[i] );
-  
+
   if (expressionZ) {
     for (int i = 0; i < expressionY->numConsts; i++)
       expressionZ->constVals.push_back( constVals[i] );
   }
 
-    /* Constants evaluation
-    double x = 0;
-    double y = 0;
+  /* Constants evaluation
+     double x = 0;
+     double y = 0;
 
-    int good = 100;
-    for (int i = 0; i < 100; i++) {
-      vector<double> vals{x,y};
-      double nx = expressionX->evaluate(vals);
-      double ny = expressionY->evaluate(vals);
+     int good = 100;
+     for (int i = 0; i < 100; i++) {
+     vector<double> vals{x,y};
+     double nx = expressionX->evaluate(vals);
+     double ny = expressionY->evaluate(vals);
 
-      double d = pow(x-nx, 2) + pow(y-ny, 2);
-      }*/
-    //}
+     double d = pow(x-nx, 2) + pow(y-ny, 2);
+     }*/
+  //}
 }
 
 void CliffordAttractor::mutateConstants() {
