@@ -12,6 +12,7 @@ This program is meant to be used in conjunction with Tyler Yates' [Java Evolutio
 ### Building
 
         run 'make' in libs/AntTweakBar/src/
+        Add libs/AntTweakBar/lib/libAntTweakBar.so to your shared library folder (e.g. /usr/local/lib on ubuntu), or add libs/AntTweakBar/lib to your LD_LIBRARY_PATH variable on linux
         run 'make' in root folder
 Usage
 ============
