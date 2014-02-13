@@ -41,6 +41,8 @@ extern Color kOrange;
 extern Color kBlack;
 extern Color kWhite;
 
+extern bool rendering;
+extern int window_width, window_height;
 extern vector<CliffordAttractor> fractals;
 
 #endif

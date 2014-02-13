@@ -5,11 +5,15 @@
 
 #include "common.h"
 #include "mainWindow.h"
+#include "fractalEditor.h"
 #include "expression.h"
 #include "fractal.h"
 #include "fbo.h"
 
 using namespace std;
+
+bool rendering = false;
+int window_width, window_height;
 
 // Legacy variables for Mandelbrot Set
 GLfloat minX = -2.2f, maxX = 0.8f, minY = -1.5f, maxY = 1.5; // complex plane boundaries
@@ -67,11 +71,19 @@ void registerControlCallbacks() {
 
 void renderInGlut() {
   glutMainLoop();
+  TwTerminate();
 }
 
 void error_callback(int error, const char* description)
 {
   fputs(description, stderr);
+}
+
+void startDisplay() {
+  TwInit(TW_OPENGL, NULL);
+  createFractalEditorWindow();
+  registerCallbacks();
+  renderInGlut();
 }
 
 //****************************************
@@ -88,6 +100,7 @@ int main(int argc, char** argv){
 
   if (argc >= 3) {
     bool savingImage = (strcmp(argv[1],"-save") == 0);
+    rendering = !savingImage;
     int startIndex = (savingImage ? 2 : 1);
     GLuint renderbuffer;
     char* imgName;
@@ -140,8 +153,7 @@ int main(int argc, char** argv){
         ca.saveToFile(imgName);
         fractals.clear();
       } else {
-        registerCallbacks();
-        renderInGlut();
+        startDisplay();
       }
     }
 
@@ -152,8 +164,7 @@ int main(int argc, char** argv){
     // No fractal definitions provided; draw an example fractal.
     fractals.push_back(CliffordAttractor("sin(-1.4 * y) + cos(-1.4 * x)", "sin(1.6 * x) + 0.7 * cos(1.6 * y)", "x", "x", "y", "z"));
     //fractals.push_back(CliffordAttractor("sin( a * y ) + c * cos(a * x)", "sin(b * x) + d * cos(b * y)"));
-    registerCallbacks();
-    renderInGlut();
+    startDisplay();
   }
 
   return 0;

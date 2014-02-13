@@ -37,7 +37,7 @@ class Node {
   
  private:
   string value;
-  double constval = 0;
+  double constval;
   Node *left, *right;
   int type;
     

@@ -7,7 +7,6 @@
 char* name;
 int windowID;
 
-int window_width, window_height;
 float window_aspect;
 bool fullScreen=false;
 
@@ -87,6 +86,7 @@ void Repaint() {
     fractals[i].paint();
   }
 
+  if (rendering) TwDraw();
   glFlush();
   glutSwapBuffers();
 }
@@ -94,9 +94,10 @@ void Repaint() {
 //****************************************
 /*
   Update viewport in response to change in window size
- */
+*/
 void Reshape(int w, int h){
   glViewport (0, 0, (GLsizei)w, (GLsizei)h);
+  if (rendering) TwWindowSize(w, h);
   glutPostRedisplay();
 }
 
@@ -119,7 +120,7 @@ void resize(int w, int h) {
 //****************************************
 /*
   Return a vector from fractal center to world coordinates of mouse
- */
+*/
 Vec3f arcSnap(float x, float y) {
   x = (2.0*x / window_width) - 1;
   y = (2.0*y / window_height) - 1;
@@ -138,107 +139,115 @@ Vec3f arcSnap(float x, float y) {
 
 //****************************************
 void MouseButton(int button, int state, int x, int y) {
-  y = window_height - y;
+  if (!rendering || !TwEventMouseButtonGLUT(button, state, x, y)) {
 
-  if (button == GLUT_LEFT_BUTTON) {
-    Vec3f arc_coords = arcSnap(x, y);
-    arcmouse_x = arc_coords[0];
-    arcmouse_y = arc_coords[1];
-    arcmouse_z = arc_coords[2];
+    y = window_height - y;
 
-    left_mouse_button = !state;  // state==0 if down
+    if (button == GLUT_LEFT_BUTTON) {
+      Vec3f arc_coords = arcSnap(x, y);
+      arcmouse_x = arc_coords[0];
+      arcmouse_y = arc_coords[1];
+      arcmouse_z = arc_coords[2];
+
+      left_mouse_button = !state;  // state==0 if down
+    }
+    if (button == GLUT_RIGHT_BUTTON) {
+      right_mouse_button = !state;  // state==0 if down
+    }
+
+    mouse_x = x, mouse_y = y;
+    glutPostRedisplay();
   }
-  if (button == GLUT_RIGHT_BUTTON) {
-    right_mouse_button = !state;  // state==0 if down
-  }
-
-  mouse_x = x, mouse_y = y;
-  glutPostRedisplay();
 }
 
 //****************************************
 void MouseMotion(int x, int y) {
-  y = window_height - y;
+  if (!rendering || !TwEventMouseMotionGLUT(x, y)) {
 
-  if (left_mouse_button) {
-    // Arc-ball rotational movement
-    Vec3f arc_coords = arcSnap(x, y);
-    float fx = arc_coords[0];
-    float fy = arc_coords[1];
-    float fz = arc_coords[2];
+    y = window_height - y;
 
-    // Find rotational axis
-    float normal_x = arcmouse_y*fz - arcmouse_z*fy;
-    float normal_y = arcmouse_z*fx - arcmouse_x*fz;
-    float normal_z = arcmouse_x*fy - arcmouse_y*fx;
+    if (left_mouse_button) {
+      // Arc-ball rotational movement
+      Vec3f arc_coords = arcSnap(x, y);
+      float fx = arc_coords[0];
+      float fy = arc_coords[1];
+      float fz = arc_coords[2];
 
-    // Find rotational angle
-    float ax = sqrt(normal_x*normal_x +
-                    normal_y*normal_y +
-                    normal_z*normal_z);
+      // Find rotational axis
+      float normal_x = arcmouse_y*fz - arcmouse_z*fy;
+      float normal_y = arcmouse_z*fx - arcmouse_x*fz;
+      float normal_z = arcmouse_x*fy - arcmouse_y*fx;
 
-    float ay = arcmouse_x*fx + arcmouse_y*fy + arcmouse_z*fz;
-    float angle = atan2(ax, ay)*180/3.14159;
+      // Find rotational angle
+      float ax = sqrt(normal_x*normal_x +
+                      normal_y*normal_y +
+                      normal_z*normal_z);
 
-    // Modify and save rotation matrix
-    glLoadIdentity();
-    glRotatef(angle, normal_x, normal_y, normal_z);
-    glMultMatrixf(rot_matrix);
-    glGetFloatv(GL_MODELVIEW_MATRIX, rot_matrix);
+      float ay = arcmouse_x*fx + arcmouse_y*fy + arcmouse_z*fz;
+      float angle = atan2(ax, ay)*180/3.14159;
 
-    arcmouse_x = fx, arcmouse_y = fy, arcmouse_z = fz;
+      // Modify and save rotation matrix
+      glLoadIdentity();
+      glRotatef(angle, normal_x, normal_y, normal_z);
+      glMultMatrixf(rot_matrix);
+      glGetFloatv(GL_MODELVIEW_MATRIX, rot_matrix);
 
-  } else if (right_mouse_button && y && mouse_y) {
-    // Zoom: Multiplies current zoom by ratio between initial and current y
-    float smy = mouse_y+window_height;
-    float sy = y+window_height;
-    float dy;
+      arcmouse_x = fx, arcmouse_y = fy, arcmouse_z = fz;
 
-    if (sy < 0 && smy < 0) {
-      dy = abs(smy/sy);
-    } else {
-      dy = abs(sy/smy);
+    } else if (right_mouse_button && y && mouse_y) {
+      // Zoom: Multiplies current zoom by ratio between initial and current y
+      float smy = mouse_y+window_height;
+      float sy = y+window_height;
+      float dy;
+
+      if (sy < 0 && smy < 0) {
+        dy = abs(smy/sy);
+      } else {
+        dy = abs(sy/smy);
+      }
+
+      zoom *= dy;
     }
 
-    zoom *= dy;
+    mouse_x = x, mouse_y = y;
+    glutPostRedisplay();
   }
-
-  mouse_x = x, mouse_y = y;
-  glutPostRedisplay();
 }
 
 
 void Keyboard(unsigned char key, int x, int y){
-  switch(key){
-  case 32:  // (Spacebar) Mutate fractal
-    fractals[0].mutateConstants();
-    zoom = 1;
-    glutPostRedisplay();
-    break;
-  case 'F':  // Toggle fullscreen
-  case 'f':
-    if(fullScreen){
-      resize();
-      fullScreen = false;
+  if (!rendering || !TwEventKeyboardGLUT(key, x, y)) {
+    switch(key){
+    case 32:  // (Spacebar) Mutate fractal
+      fractals[0].mutateConstants();
+      zoom = 1;
+      glutPostRedisplay();
+      break;
+    case 'F':  // Toggle fullscreen
+    case 'f':
+      if(fullScreen){
+        resize();
+        fullScreen = false;
+      }
+      else{
+        fullScreen = true;
+        glutFullScreen();
+      }
+      glutPostRedisplay();
+      break;
+    case 's':  // Save to test.png
+      ExternalRenderer::outputToImage("test");
+      break;
+    case 27 : // (ESC) close the program
+      glutDestroyWindow(windowID);
+      exit(0);
+      break;
     }
-    else{
-      fullScreen = true;
-      glutFullScreen();
-    }
-    glutPostRedisplay();
-    break;
-  case 's':  // Save to test.png
-    ExternalRenderer::outputToImage("test");
-    break;
-  case 27 : // (ESC) close the program
-    glutDestroyWindow(windowID);
-    exit(0);
-    break;
   }
 }
-
 void registerCallbacks() {
   // set the event handling methods
+  TwGLUTModifiersFunc(glutGetModifiers);
   glutDisplayFunc(Repaint);
   glutReshapeFunc(Reshape);
   glutMouseFunc(MouseButton);

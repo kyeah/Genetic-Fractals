@@ -2,10 +2,10 @@
 # Aesthetic Fractals: Makefile
 
 CC = g++
-CFLAGS = -g -std=c++11  # Use -std=c++0x for versions of gcc and g++ <4.7, c++11 otherwise
+CFLAGS = -g -std=c++0x  # Use -std=c++0x for versions of gcc and g++ <4.7, c++11 otherwise
 INCLUDE = -Ilibs/AntTweakBar/include
 LIBDIR = -Llibs/AntTweakBar/lib
-LIBS = -lpng -lglut -lGLU -lm -lX11 -lGLEW -lGL #-lglfw3 -lX11 -lXi -lXxf86vm -lXrandr
+LIBS = -lpng -lglut -lGLU -lm -lX11 -lGLEW -lGL -lAntTweakBar #-lglfw3 -lX11 -lXi -lXxf86vm -lXrandr
 
 ###########################################################
 # Options if compiling on Mac
@@ -24,14 +24,17 @@ endif
 
 ###########################################################
 
-aesthetics: main.o mainWindow.o expression.o expressionParser.o fractal.o fbo.o color.o
-	${CC} ${CFLAGS} $(INCLUDE) -o aesthetics main.o mainWindow.o expression.o fractal.o expressionParser.o fbo.o color.o ${LIBDIR} ${LIBS}
+aesthetics: main.o mainWindow.o fractalEditor.o expression.o expressionParser.o fractal.o fbo.o color.o
+	${CC} ${CFLAGS} $(INCLUDE) -o aesthetics main.o mainWindow.o fractalEditor.o expression.o fractal.o expressionParser.o fbo.o color.o ${LIBDIR} ${LIBS}
 
 main.o: main.cpp mainWindow.h expression.h fractal.h common.h
 	${CC} -c ${CFLAGS} $(INCLUDE) main.cpp
 
 mainWindow.o: mainWindow.cpp mainWindow.h fractal.h common.h
 	${CC} -c ${CFLAGS} $(INCLUDE) mainWindow.cpp
+
+fractalEditor.o: fractalEditor.cpp fractalEditor.h fractal.h common.h
+	${CC} -c ${CFLAGS} $(INCLUDE) fractalEditor.cpp
 
 expression.o: expression.cpp expression.h libs/expressionParser.h
 	${CC} -c ${CFLAGS} $(INCLUDE) expression.cpp
