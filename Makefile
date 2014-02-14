@@ -33,13 +33,13 @@ main.o: main.cpp mainWindow.h expression.h fractal.h common.h
 mainWindow.o: mainWindow.cpp mainWindow.h fractal.h common.h
 	${CC} -c ${CFLAGS} $(INCLUDE) mainWindow.cpp
 
-fractalEditor.o: fractalEditor.cpp fractalEditor.h fractal.h common.h
+fractalEditor.o: fractalEditor.cpp fractalEditor.h fractal.h common.h tw.h
 	${CC} -c ${CFLAGS} $(INCLUDE) fractalEditor.cpp
 
 expression.o: expression.cpp expression.h libs/expressionParser.h
 	${CC} -c ${CFLAGS} $(INCLUDE) expression.cpp
 
-fractal.o: fractal.cpp fractal.h vec.h types.h common.h rng.h
+fractal.o: fractal.cpp fractal.h vec.h types.h common.h rng.h tw.h
 	${CC} -c ${CFLAGS} $(INCLUDE) fractal.cpp
 
 expressionParser.o: libs/expressionParser.cpp libs/expressionParser.h

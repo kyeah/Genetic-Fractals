@@ -24,56 +24,6 @@ void setPrecisionPoints(int points) {
   ALPHA = (preAlphaVal > 1 ? 1 : preAlphaVal);
 }
 
-void TW_CALL AttractorFractal::setXStr(const void *value, void *clientData) {
-  AttractorFractal *fractal = static_cast<AttractorFractal *>(clientData);
-  fractal->expressionX->setString(*static_cast<const string *>(value));
-}
-void TW_CALL  AttractorFractal::setYStr(const void *value, void *clientData) {
-  AttractorFractal *fractal = static_cast<AttractorFractal *>(clientData);
-  fractal->expressionY->setString(*static_cast<const string *>(value));
-}
-void TW_CALL  AttractorFractal::setZStr(const void *value, void *clientData) {
-  AttractorFractal *fractal = static_cast<AttractorFractal *>(clientData);
-  fractal->expressionZ->setString(*static_cast<const string *>(value));
-}
-void TW_CALL  AttractorFractal::setRStr(const void *value, void *clientData) {
-  AttractorFractal *fractal = static_cast<AttractorFractal *>(clientData);
-  fractal->expressionR->setString(*static_cast<const string *>(value));
-}
-void TW_CALL  AttractorFractal::setGStr(const void *value, void *clientData) {
-  AttractorFractal *fractal = static_cast<AttractorFractal *>(clientData);
-  fractal->expressionG->setString(*static_cast<const string *>(value));
-}
-void TW_CALL  AttractorFractal::setBStr(const void *value, void *clientData) {
-  AttractorFractal *fractal = static_cast<AttractorFractal *>(clientData);
-  fractal->expressionB->setString(*static_cast<const string *>(value));
-}
-
-void TW_CALL AttractorFractal::getXStr(void *value, void *clientData) {
-  const AttractorFractal *fractal = static_cast<const AttractorFractal *>(clientData);
-  *static_cast<string *>(value) = fractal->expressionX->getString();
-}
-void TW_CALL AttractorFractal::getYStr(void *value, void *clientData) {
-  const AttractorFractal *fractal = static_cast<const AttractorFractal *>(clientData);
-  *static_cast<string *>(value) = fractal->expressionY->getString();
-}
-void TW_CALL AttractorFractal::getZStr(void *value, void *clientData) {
-  const AttractorFractal *fractal = static_cast<const AttractorFractal *>(clientData);
-  *static_cast<string *>(value) = fractal->expressionZ->getString();
-}
-void TW_CALL AttractorFractal::getRStr(void *value, void *clientData) {
-  const AttractorFractal *fractal = static_cast<const AttractorFractal *>(clientData);
-  *static_cast<string *>(value) = fractal->expressionR->getString();
-}
-void TW_CALL AttractorFractal::getGStr(void *value, void *clientData) {
-  const AttractorFractal *fractal = static_cast<const AttractorFractal *>(clientData);
-  *static_cast<string *>(value) = fractal->expressionG->getString();
-}
-void TW_CALL AttractorFractal::getBStr(void *value, void *clientData) {
-  const AttractorFractal *fractal = static_cast<const AttractorFractal *>(clientData);
-  *static_cast<string *>(value) = fractal->expressionB->getString();
-}
-
 void AttractorFractal::calculate() {
   isCalculated = false;
 
