@@ -12,7 +12,7 @@ int createFractalEditorWindow() {
   TwAddVarCB(editBar, "X Equation", TW_TYPE_STDSTRING, 
              AttractorFractal::setXStr, AttractorFractal::getXStr, &(fractals[0]),
              "");
-  /*
+  
   TwAddVarCB(editBar, "Y Equation", TW_TYPE_STDSTRING, 
              AttractorFractal::setYStr, AttractorFractal::getYStr, &(fractals[0]),
              "");
@@ -32,6 +32,10 @@ int createFractalEditorWindow() {
   TwAddVarCB(editBar, "B Equation", TW_TYPE_STDSTRING, 
              AttractorFractal::setBStr, AttractorFractal::getBStr, &(fractals[0]),
              "");
-  */
+
+  TwAddVarCB(editBar, "Precision Points", TW_TYPE_INT32, 
+             twSetPrecisionPoints, twGetPrecisionPoints, NULL,
+             "");
+
   return 1;
 }

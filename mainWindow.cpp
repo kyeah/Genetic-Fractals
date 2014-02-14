@@ -140,7 +140,6 @@ Vec3f arcSnap(float x, float y) {
 //****************************************
 void MouseButton(int button, int state, int x, int y) {
   if (!rendering || !TwEventMouseButtonGLUT(button, state, x, y)) {
-
     y = window_height - y;
 
     if (button == GLUT_LEFT_BUTTON) {
@@ -163,7 +162,6 @@ void MouseButton(int button, int state, int x, int y) {
 //****************************************
 void MouseMotion(int x, int y) {
   if (!rendering || !TwEventMouseMotionGLUT(x, y)) {
-
     y = window_height - y;
 
     if (left_mouse_button) {

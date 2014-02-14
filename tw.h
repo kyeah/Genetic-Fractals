@@ -1,8 +1,20 @@
 #pragma once
+
+#include "fbo.h"
 #include "fractal.h"
 
 void TW_CALL CopyStdStringToClient(std::string& dest, const std::string& src) {
   dest = src;
+}
+
+void TW_CALL twSetPrecisionPoints(const void *value, void *clientData) {
+  const int *srcPtr = static_cast<const int *>(value);
+  setPrecisionPoints(*srcPtr);
+}
+
+void TW_CALL twGetPrecisionPoints(void *value, void *clientData) {
+  int *destPtr = static_cast<int *>(value);
+  *destPtr = PRECISION_POINTS;
 }
 
 void TW_CALL AttractorFractal::setXStr(const void *value, void *clientData) {
