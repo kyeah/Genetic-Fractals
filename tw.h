@@ -13,6 +13,27 @@ void TW_CALL CopyStdStringToClient(std::string& dest, const std::string& src) {
   dest = src;
 }
 
+void TW_CALL twSetBGColor(const void *value, void *clientData) {
+  const float *c = static_cast<const float *>(value);
+  //  const float *c = *srcPtr;
+  if(clearColor[0] != c[0] || 
+     clearColor[1] != c[1] || 
+     clearColor[2] != c[2] || 
+     clearColor[3] != c[3]) {
+    clearColor = Color(c[0], c[1], c[2], c[3]);
+    glClearColor(c[0], c[1], c[2], c[3]);
+    glutPostRedisplay();
+  }
+}
+
+void TW_CALL twGetBGColor(void *value, void *clientData) {
+  float *c = static_cast<float *>(value);
+  c[0] = clearColor[0];
+  c[1] = clearColor[1];
+  c[2] = clearColor[2];
+  c[3] = clearColor[3];
+}
+
 void TW_CALL twSetPrecisionPoints(const void *value, void *clientData) {
   const int *srcPtr = static_cast<const int *>(value);
   if (PRECISION_POINTS != *srcPtr) {

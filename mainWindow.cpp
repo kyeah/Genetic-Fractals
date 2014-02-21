@@ -24,7 +24,7 @@ GLfloat rot_matrix[16] = {1, 0, 0, 0,
                           0, 0, 0, 1};
 
 vector<CliffordAttractor> fractals;
-Color clearColor = kWhite;
+Color clearColor = kBlack;
 
 int createMainWindow(string _name) {
   window_width = glutGet(GLUT_SCREEN_WIDTH);

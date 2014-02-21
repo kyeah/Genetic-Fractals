@@ -25,7 +25,7 @@ struct Color {
     c[0] = _r;
     c[1] = _g;
     c[2] = _b;
-    c[3] = _a;    
+    c[3] = _a;
   }
   operator GLfloat*() { return c; }
   GLfloat c[4];
