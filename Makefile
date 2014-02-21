@@ -51,5 +51,8 @@ fbo.o: fbo.cpp fbo.h common.h
 color.o: color.cpp common.h
 	${CC} -c ${CFLAGS} $(INCLUDE) color.cpp
 
+dirty_link:
+	export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$PWD/libs/AntTweakBar/lib
+
 clean:
 	rm -f aesthetics *.o *~ *# *.gch
