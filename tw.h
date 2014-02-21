@@ -14,38 +14,56 @@ void TW_CALL twSetPrecisionPoints(const void *value, void *clientData) {
 
 void TW_CALL twGetPrecisionPoints(void *value, void *clientData) {
   int *destPtr = static_cast<int *>(value);
-  *destPtr = PRECISION_POINTS;
+  *destPtr = PRECISION_POINTS;  
 }
 
 void TW_CALL AttractorFractal::setXStr(const void *value, void *clientData) {
   const std::string *srcPtr = static_cast<const std::string *>(value);
   AttractorFractal *fractal = static_cast<AttractorFractal *>(clientData);
   fractal->expressionX->setString(*srcPtr);
+  fractal->clear();
+  fractal->calculate();
+  glutPostRedisplay();
 }
 void TW_CALL AttractorFractal::setYStr(const void *value, void *clientData) {
   const std::string *srcPtr = static_cast<const std::string *>(value);
   AttractorFractal *fractal = static_cast<AttractorFractal *>(clientData);
   fractal->expressionY->setString(*srcPtr);
+  fractal->clear();
+  fractal->calculate();
+  glutPostRedisplay();
 }
 void TW_CALL AttractorFractal::setZStr(const void *value, void *clientData) {
   const std::string *srcPtr = static_cast<const std::string *>(value);
   AttractorFractal *fractal = static_cast<AttractorFractal *>(clientData);
   fractal->expressionZ->setString(*srcPtr);
+  fractal->clear();
+  fractal->calculate();
+  glutPostRedisplay();
 }
 void TW_CALL AttractorFractal::setRStr(const void *value, void *clientData) {
   const std::string *srcPtr = static_cast<const std::string *>(value);
   AttractorFractal *fractal = static_cast<AttractorFractal *>(clientData);
   fractal->expressionR->setString(*srcPtr);
+  fractal->clear();
+  fractal->calculate();
+  glutPostRedisplay();
 }
 void TW_CALL AttractorFractal::setGStr(const void *value, void *clientData) {
   const std::string *srcPtr = static_cast<const std::string *>(value);
   AttractorFractal *fractal = static_cast<AttractorFractal *>(clientData);
   fractal->expressionG->setString(*srcPtr);
+  fractal->clear();
+  fractal->calculate();
+  glutPostRedisplay();
 }
 void TW_CALL AttractorFractal::setBStr(const void *value, void *clientData) {
   const std::string *srcPtr = static_cast<const std::string *>(value);
   AttractorFractal *fractal = static_cast<AttractorFractal *>(clientData);
   fractal->expressionB->setString(*srcPtr);
+  fractal->clear();
+  fractal->calculate();
+  glutPostRedisplay();
 }
 
 void TW_CALL AttractorFractal::getXStr(void *value, void *clientData) {
