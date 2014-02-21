@@ -24,6 +24,10 @@ void setPrecisionPoints(int points) {
   ALPHA = (preAlphaVal > 1 ? 1 : preAlphaVal);
 }
 
+void setAlpha(float a) {
+  ALPHA = (a > 1 ? 1 : a);
+}
+
 void AttractorFractal::calculate() {
   isCalculated = false;
 
@@ -95,6 +99,7 @@ void AttractorFractal::paint() {
 
 void AttractorFractal::clear() {
   points.clear();
+  colors.clear();
   minX = minY = INT_MAX;
   maxX = maxY = INT_MIN;
 }

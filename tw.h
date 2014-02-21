@@ -3,13 +3,22 @@
 #include "fbo.h"
 #include "fractal.h"
 
+void redrawFractal(AttractorFractal *fractal) {
+  fractal->clear();
+  fractal->calculate();
+  glutPostRedisplay();
+}
+
 void TW_CALL CopyStdStringToClient(std::string& dest, const std::string& src) {
   dest = src;
 }
 
 void TW_CALL twSetPrecisionPoints(const void *value, void *clientData) {
   const int *srcPtr = static_cast<const int *>(value);
-  setPrecisionPoints(*srcPtr);
+  if (PRECISION_POINTS != *srcPtr) {
+    setPrecisionPoints(*srcPtr);
+    redrawFractal(&fractals[0]);
+  }
 }
 
 void TW_CALL twGetPrecisionPoints(void *value, void *clientData) {
@@ -17,53 +26,66 @@ void TW_CALL twGetPrecisionPoints(void *value, void *clientData) {
   *destPtr = PRECISION_POINTS;  
 }
 
+void TW_CALL twSetAlpha(const void *value, void *clientData) {
+  const float *srcPtr = static_cast<const float *>(value);
+  if (ALPHA != *srcPtr) {
+    setAlpha(*srcPtr);
+    redrawFractal(&fractals[0]);
+  }
+}
+
+void TW_CALL twGetAlpha(void *value, void *clientData) {
+  float *srcPtr = static_cast<float *>(value);
+  *srcPtr = ALPHA;
+}
+
 void TW_CALL AttractorFractal::setXStr(const void *value, void *clientData) {
   const std::string *srcPtr = static_cast<const std::string *>(value);
   AttractorFractal *fractal = static_cast<AttractorFractal *>(clientData);
-  fractal->expressionX->setString(*srcPtr);
-  fractal->clear();
-  fractal->calculate();
-  glutPostRedisplay();
+  if (fractal->expressionX->getString().compare(*srcPtr) != 0) {
+    fractal->expressionX->setString(*srcPtr);
+    redrawFractal(fractal);
+  }
 }
 void TW_CALL AttractorFractal::setYStr(const void *value, void *clientData) {
   const std::string *srcPtr = static_cast<const std::string *>(value);
   AttractorFractal *fractal = static_cast<AttractorFractal *>(clientData);
-  fractal->expressionY->setString(*srcPtr);
-  fractal->clear();
-  fractal->calculate();
-  glutPostRedisplay();
+  if (fractal->expressionY->getString().compare(*srcPtr) != 0) {
+    fractal->expressionY->setString(*srcPtr);
+    redrawFractal(fractal);
+  }
 }
 void TW_CALL AttractorFractal::setZStr(const void *value, void *clientData) {
   const std::string *srcPtr = static_cast<const std::string *>(value);
   AttractorFractal *fractal = static_cast<AttractorFractal *>(clientData);
-  fractal->expressionZ->setString(*srcPtr);
-  fractal->clear();
-  fractal->calculate();
-  glutPostRedisplay();
+  if (fractal->expressionZ->getString().compare(*srcPtr) != 0) {
+    fractal->expressionZ->setString(*srcPtr);
+    redrawFractal(fractal);
+  }
 }
 void TW_CALL AttractorFractal::setRStr(const void *value, void *clientData) {
   const std::string *srcPtr = static_cast<const std::string *>(value);
   AttractorFractal *fractal = static_cast<AttractorFractal *>(clientData);
-  fractal->expressionR->setString(*srcPtr);
-  fractal->clear();
-  fractal->calculate();
-  glutPostRedisplay();
+    if (fractal->expressionR->getString().compare(*srcPtr) != 0) {
+      fractal->expressionR->setString(*srcPtr);
+      redrawFractal(fractal);
+    }
 }
 void TW_CALL AttractorFractal::setGStr(const void *value, void *clientData) {
   const std::string *srcPtr = static_cast<const std::string *>(value);
   AttractorFractal *fractal = static_cast<AttractorFractal *>(clientData);
-  fractal->expressionG->setString(*srcPtr);
-  fractal->clear();
-  fractal->calculate();
-  glutPostRedisplay();
+  if (fractal->expressionG->getString().compare(*srcPtr) != 0) {
+    fractal->expressionG->setString(*srcPtr);
+    redrawFractal(fractal);
+  }
 }
 void TW_CALL AttractorFractal::setBStr(const void *value, void *clientData) {
   const std::string *srcPtr = static_cast<const std::string *>(value);
   AttractorFractal *fractal = static_cast<AttractorFractal *>(clientData);
-  fractal->expressionB->setString(*srcPtr);
-  fractal->clear();
-  fractal->calculate();
-  glutPostRedisplay();
+  if (fractal->expressionB->getString().compare(*srcPtr) != 0) {
+    fractal->expressionB->setString(*srcPtr);
+    redrawFractal(fractal);
+  }
 }
 
 void TW_CALL AttractorFractal::getXStr(void *value, void *clientData) {

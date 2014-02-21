@@ -40,6 +40,7 @@ extern Color kBrown;
 extern Color kOrange;
 extern Color kBlack;
 extern Color kWhite;
+extern Color clearColor;
 
 extern bool rendering;
 extern int window_width, window_height;

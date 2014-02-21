@@ -24,6 +24,7 @@ GLfloat rot_matrix[16] = {1, 0, 0, 0,
                           0, 0, 0, 1};
 
 vector<CliffordAttractor> fractals;
+Color clearColor = kWhite;
 
 int createMainWindow(string _name) {
   window_width = glutGet(GLUT_SCREEN_WIDTH);
@@ -39,7 +40,7 @@ int createMainWindow(string _name) {
   glutInitWindowSize(window_width, window_height);
 
   windowID = glutCreateWindow(_name.c_str());
-  glClearColor(0,0,0,1);
+  glClearColor(clearColor[0], clearColor[1], clearColor[2], clearColor[3]);
 
   // Enable Blending for transparency
   glShadeModel(GL_SMOOTH);

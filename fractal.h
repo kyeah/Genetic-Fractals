@@ -8,6 +8,10 @@
 #include "bb.h"
 
 void setPrecisionPoints(int points);
+void setAlpha(float a);
+
+extern int PRECISION_POINTS;
+extern float ALPHA;
 
 class AttractorFractal {
  protected:

@@ -6,7 +6,7 @@ int createFractalEditorWindow() {
   
   TwBar *editBar;
   editBar = TwNewBar("Fractal Editor");
-  TwDefine(" 'Fractal Editor' size='400 300' ");
+  TwDefine(" 'Fractal Editor' size='400 300' valueswidth='fit' ");
   TwCopyStdStringToClientFunc(CopyStdStringToClient);
 
   TwAddVarCB(editBar, "X Equation", TW_TYPE_STDSTRING, 
@@ -36,6 +36,12 @@ int createFractalEditorWindow() {
   TwAddVarCB(editBar, "Precision Points", TW_TYPE_INT32, 
              twSetPrecisionPoints, twGetPrecisionPoints, NULL,
              "");
+
+  TwAddVarCB(editBar, "Per-point Alpha", TW_TYPE_FLOAT, 
+             twSetAlpha, twGetAlpha, NULL,
+             "");
+
+  //  TwAddSeparator(editBar, "Color Separator", "");
 
   return 1;
 }

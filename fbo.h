@@ -6,8 +6,6 @@
 
 using namespace std;
 
-extern int PRECISION_POINTS;
-
 class ExternalRenderer {
 public:
   static void setImageWidth(int width);
