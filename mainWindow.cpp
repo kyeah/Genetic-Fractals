@@ -84,12 +84,29 @@ void adjustBounds(AttractorFractal& f) {
 void Repaint() {
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-  adjustBounds(*mainFractal);
-  mainFractal->paint();
-
-  if (rendering) TwDraw();
+  if (!waiting) {
+    adjustBounds(*mainFractal);
+    if (mainFractal->paint()) {
+      if (rendering) TwDraw();
+    } else {
+      waiting = true;
+    }
+  }
+  
   glFlush();
   glutSwapBuffers();
+}
+
+void Idle() {
+  static float angle = 1.0;
+  if (waiting) {
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glColor3f(1.0,1.0,1.0);
+    glRotatef(angle,0,1,0);
+    glutWireCube(20);
+    glFlush();
+    glutSwapBuffers();
+  }
 }
 
 //****************************************

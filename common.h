@@ -16,6 +16,7 @@
 //#include <GLFW/glfw3.h>
 #endif
 
+#include <atomic>
 #include "fractal.h"
 #include "Queue.h"
 #pragma hdrstop
@@ -44,6 +45,7 @@ extern Color kWhite;
 extern Color clearColor;
 
 extern bool rendering;
+extern atomic_bool waiting;
 extern int window_width, window_height;
 extern int PRECISION_POINTS;
 extern Queue<CliffordAttractor> fractals;

@@ -13,6 +13,7 @@
 using namespace std;
 
 bool rendering = true;
+atomic_bool waiting(false);
 int window_width, window_height;
 
 // Legacy variables for Mandelbrot Set
@@ -24,7 +25,7 @@ GLfloat palette[paletteSize][3];
 //****************************************
 /*
   Legacy palette generator for Mandelbrot Set
- */
+*/
 GLfloat* calculateColor(GLfloat u, GLfloat v){
   GLfloat re = u;
   GLfloat im = v;
@@ -105,7 +106,11 @@ int main(int argc, char** argv){
   }
 
   if (runInBackground) {
-    
+    //    string cmd;
+    //    
+    //    while(cmd << cin) {
+    //      char* 
+    //    }
   }
 
   if (argc >= 3) {

@@ -2,6 +2,8 @@
 #define __FRACTAL_H__
 
 #include <climits>
+#include <atomic>
+#include <pthread.h>
 
 #include "expression.h"
 #include "vec.h"
@@ -23,11 +25,15 @@ class AttractorFractal {
   bool isCalculated;
   vector<Vec3f> points;
   vector<Vec4f> colors;
+  pthread_t calcThread;
 
  public:
+  atomic_bool alive;
+
   AttractorFractal() { }
 
   AttractorFractal(string x, string y, string z = "0", string r = "1", string g = "1", string b = "1") {
+    alive = false;
     vector<string> vars = {"x", "y", "z", "r", "g", "b"};
 
     expressionX = new Expression(x, vector<string>(), vars);
@@ -43,6 +49,7 @@ class AttractorFractal {
   
  AttractorFractal(Expression* ex, Expression* ey, Expression* ez = 0, Expression* er = 0, Expression* eg = 0, Expression* eb = 0)
    : expressionX(ex), expressionY(ey), expressionZ(ez), expressionR(er), expressionG(eg), expressionB(eb) {
+    alive = false;
     clear();
     calculate();
   }
@@ -64,8 +71,9 @@ class AttractorFractal {
   BoundingBox getbb() { return bb; }
   bool isReady() { return isCalculated; } 
   int getNumPoints() { return points.size(); }
+  static void* calculateAsync(void*);
   void calculate();
-  void paint();
+  bool paint();
   void clear();
   void saveToFile(string name);
   void printInfo();
@@ -77,6 +85,7 @@ class CliffordAttractor : public AttractorFractal {
   vector<float> constVals;
 
   CliffordAttractor(string x, string y, string z = "0", string r = "1", string g = "1", string b = "1") : AttractorFractal() {
+    alive = false;
     consts = {"a", "b", "c", "d"};
     vector<string> vars = {"x", "y", "z", "r", "g", "b"};
 

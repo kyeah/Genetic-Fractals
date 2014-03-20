@@ -5,7 +5,7 @@ CC = g++
 CFLAGS = -g -std=c++0x  # Use -std=c++0x for versions of gcc and g++ <4.7, c++11 otherwise
 INCLUDE = -Ilibs/AntTweakBar/include
 LIBDIR = -Llibs/AntTweakBar/lib
-LIBS = -lpng -lglut -lGLU -lm -lX11 -lGLEW -lGL -lAntTweakBar #-lglfw3 -lX11 -lXi -lXxf86vm -lXrandr
+LIBS = -pthread -lpng -lglut -lGLU -lm -lX11 -lGLEW -lGL -lAntTweakBar #-lglfw3 -lX11 -lXi -lXxf86vm -lXrandr
 
 ###########################################################
 # Options if compiling on Mac
