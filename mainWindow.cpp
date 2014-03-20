@@ -74,6 +74,7 @@ void adjustBounds(AttractorFractal& f) {
   z = (bbox.max[2] + bbox.min[2]) / 2.0f;
   r = sqrt((bbox.max[0] - x)*(bbox.max[0] - x) + (bbox.max[1] - y)*(bbox.max[1] - y) + (bbox.max[2] - z)*(bbox.max[2] - z));
   fdistance = r / .3697f;
+  
   gluLookAt(0.0f, 0.0f, fdistance*zoom, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f);
   glTranslatef(-x, -y, -z);
 
@@ -81,45 +82,72 @@ void adjustBounds(AttractorFractal& f) {
 }
 
 //****************************************
-void Repaint() {
+void drawLoader() {
   static float angle = 1.0;
+  glShadeModel(GL_SMOOTH);
+  glEnable(GL_LIGHTING);
+  glEnable(GL_LIGHT0);
+  glEnable(GL_COLOR_MATERIAL);
+
+  GLfloat position[] = { -15, -15, 30, 1 };
+  glLightfv(GL_LIGHT0, GL_POSITION, position);
+
+  glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+  glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
+
+  glColor4f(1,1,1,fadeAlpha);
+  glLoadIdentity();
+  gluLookAt(0,-2,0,0,0,0,1,0,0);
+
+  glRotatef(angle,1,0,0);
+  glTranslatef(0.2,0,0);
+  for (float Xangle = 0; Xangle < 360; Xangle += 30) {
+    glTranslatef(-0.2,0,0);
+    glRotatef(Xangle,0,1,0);
+    glTranslatef(0.2,0,0);
+    glutSolidCube(0.05);
+
+    glTranslatef(-0.2,0,0);
+    glRotatef(90,0,0,1);
+    glTranslatef(0.2,0,0);
+    glutSolidCube(0.05);
+  }
+
+  angle+=5;
+}
+
+void Repaint() {
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-  waiting = true;
   if (!waiting) {
-    glShadeModel(GL_FLAT);
-    glDisable(GL_LIGHTING);
-    glDisable(GL_LIGHT0);
-    glDisable(GL_COLOR_MATERIAL);
+    fadeAlpha -= fadeSpeed;
+    if (fadeAlpha <= 0) {
+      glShadeModel(GL_FLAT);
+      glDisable(GL_LIGHTING);
+      glDisable(GL_LIGHT0);
+      glDisable(GL_COLOR_MATERIAL);
+    }
 
-    cout << "NOT WAITING!!!" << endl;
     adjustBounds(*mainFractal);
     if (mainFractal->paint()) {
-      if (rendering) TwDraw();
+      if (rendering) {
+        TwDraw();
+      } else {
+        ExternalRenderer::outputToImage(mainFractal->getName());
+        mainFractal->saveToFile(mainFractal->getName());
+        exit(0);
+      }
     } else {
       waiting = true;
     }
   }
+
   if (waiting) {
-    cout << "WAITING!!!" << endl;
+    fadeAlpha = 1.0;
+  }
 
-    glShadeModel(GL_SMOOTH);
-    glEnable(GL_LIGHTING);
-    glEnable(GL_LIGHT0);
-    glEnable(GL_COLOR_MATERIAL);
-
-    GLfloat position[] = { -150, 150, 300, 1 };
-    glLightfv(GL_LIGHT0, GL_POSITION, position);
-
-    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-    glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
-
-    glColor3f(1.0,1.0,1.0);
-    glLoadIdentity();
-    glRotatef(45,1,0,1);
-    glRotatef(angle,0,1,0);
-    glutSolidCube(0.4);
-    angle++;
+  if (rendering && fadeAlpha > 0) {
+    drawLoader();
   }
 
   glFlush();
@@ -128,6 +156,9 @@ void Repaint() {
 
 void Idle() {
   if (waiting) {
+    glutPostRedisplay();
+  } else if (fadeAlpha > 0) {
+    fadeAlpha -= fadeSpeed;
     glutPostRedisplay();
   }
 }

@@ -17,6 +17,7 @@ extern float ALPHA;
 
 class AttractorFractal {
  protected:
+  string name;
   Expression *expressionX, *expressionY, *expressionZ;
   Expression *expressionR, *expressionG, *expressionB;
 
@@ -30,9 +31,9 @@ class AttractorFractal {
  public:
   atomic_bool alive;
 
-  AttractorFractal() { }
+ AttractorFractal(string _name) : name(_name), alive(false) { }
 
-  AttractorFractal(string x, string y, string z = "0", string r = "1", string g = "1", string b = "1") {
+ AttractorFractal(string _name, string x, string y, string z = "0", string r = "1", string g = "1", string b = "1") : name(_name) {
     alive = false;
     vector<string> vars = {"x", "y", "z", "r", "g", "b"};
 
@@ -47,8 +48,8 @@ class AttractorFractal {
     calculate();
   }
   
- AttractorFractal(Expression* ex, Expression* ey, Expression* ez = 0, Expression* er = 0, Expression* eg = 0, Expression* eb = 0)
-   : expressionX(ex), expressionY(ey), expressionZ(ez), expressionR(er), expressionG(eg), expressionB(eb) {
+ AttractorFractal(string _name, Expression* ex, Expression* ey, Expression* ez = 0, Expression* er = 0, Expression* eg = 0, Expression* eb = 0)
+   : expressionX(ex), expressionY(ey), expressionZ(ez), expressionR(er), expressionG(eg), expressionB(eb), name(_name) {
     alive = false;
     clear();
     calculate();
@@ -71,6 +72,7 @@ class AttractorFractal {
   BoundingBox getbb() { return bb; }
   bool isReady() { return isCalculated; } 
   int getNumPoints() { return points.size(); }
+  string getName() { return name; }
   static void* calculateAsync(void*);
   void calculate();
   bool paint();
@@ -84,8 +86,7 @@ class CliffordAttractor : public AttractorFractal {
   vector<string> consts;
   vector<float> constVals;
 
-  CliffordAttractor(string x, string y, string z = "0", string r = "1", string g = "1", string b = "1") : AttractorFractal() {
-    alive = false;
+ CliffordAttractor(string _name, string x, string y, string z = "0", string r = "1", string g = "1", string b = "1") : AttractorFractal(_name) {
     consts = {"a", "b", "c", "d"};
     vector<string> vars = {"x", "y", "z", "r", "g", "b"};
 
