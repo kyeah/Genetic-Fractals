@@ -82,9 +82,17 @@ void adjustBounds(AttractorFractal& f) {
 
 //****************************************
 void Repaint() {
+  static float angle = 1.0;
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+  waiting = true;
   if (!waiting) {
+    glShadeModel(GL_FLAT);
+    glDisable(GL_LIGHTING);
+    glDisable(GL_LIGHT0);
+    glDisable(GL_COLOR_MATERIAL);
+
+    cout << "NOT WAITING!!!" << endl;
     adjustBounds(*mainFractal);
     if (mainFractal->paint()) {
       if (rendering) TwDraw();
@@ -92,20 +100,35 @@ void Repaint() {
       waiting = true;
     }
   }
-  
+  if (waiting) {
+    cout << "WAITING!!!" << endl;
+
+    glShadeModel(GL_SMOOTH);
+    glEnable(GL_LIGHTING);
+    glEnable(GL_LIGHT0);
+    glEnable(GL_COLOR_MATERIAL);
+
+    GLfloat position[] = { -150, 150, 300, 1 };
+    glLightfv(GL_LIGHT0, GL_POSITION, position);
+
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
+
+    glColor3f(1.0,1.0,1.0);
+    glLoadIdentity();
+    glRotatef(45,1,0,1);
+    glRotatef(angle,0,1,0);
+    glutSolidCube(0.4);
+    angle++;
+  }
+
   glFlush();
   glutSwapBuffers();
 }
 
 void Idle() {
-  static float angle = 1.0;
   if (waiting) {
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glColor3f(1.0,1.0,1.0);
-    glRotatef(angle,0,1,0);
-    glutWireCube(20);
-    glFlush();
-    glutSwapBuffers();
+    glutPostRedisplay();
   }
 }
 
@@ -266,7 +289,7 @@ void Keyboard(unsigned char key, int x, int y){
         break;
       }
     }
-    glutPostRedisplay();         
+    glutPostRedisplay();
   }
 }
 
@@ -278,6 +301,7 @@ void registerCallbacks() {
   glutMouseFunc(MouseButton);
   glutMotionFunc(MouseMotion);
   glutKeyboardFunc(Keyboard);
+  glutIdleFunc(Idle);
   glutFullScreen();
   fullScreen=true;
 }

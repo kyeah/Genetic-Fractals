@@ -11,6 +11,7 @@ void resize(int w, int h);
 
 void Reshape(int w, int h);
 void resize();
+void Idle();
 void MouseButton(int button, int state, int x, int y);
 void MouseMotion(int x, int y);
 void Keyboard(unsigned char key, int x, int y);

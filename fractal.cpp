@@ -1,24 +1,11 @@
-#include "common.h"
-#include <AntTweakBar.h>
-
-#ifdef _WIN32
-#include <windows.h>
-#endif
-#ifdef __MAC__
-#include <OpenGL/gl.h>
-#include <GLUT/glut.h>
-#else
-#include <GL/gl.h>
-#include <GL/glut.h>
-#endif
-
 #include <pthread.h>
 #include <signal.h>
 
+#include "common.h"
 #include "fractal.h"
 #include "rng.h"
 
-int PRECISION_POINTS = 1000;
+int PRECISION_POINTS = 1000000;
 float preAlphaVal = 90000 / (float)PRECISION_POINTS;
 float ALPHA = (preAlphaVal > 1 ? 1 : preAlphaVal);
 
@@ -43,34 +30,25 @@ void* AttractorFractal::calculateAsync(void* args) {
   int pp = PRECISION_POINTS;
   float alpha = ALPHA;
   for (int i=0; i < pp; i++) {
-    cout << "test" << endl;
     vals[0] = x;
     vals[1] = y;
     vals[2] = z;
 
-    cout << "test exp x" << endl;
     x = f->expressionX->evaluate(vals);
-
-    cout << "test exp y" << endl;
     y = f->expressionY->evaluate(vals);
 
-    cout << "test exp z" << endl;
     if (f->expressionZ) {
       z = f->expressionZ->evaluate(vals);
-    cout << "test minmaxz" << endl;
       if (z < f->minZ) f->minZ = z;
       if (z > f->maxZ) f->maxZ = z;
     }
 
-    cout << "test minmaxx" << endl;
     if (x < f->minX) f->minX = x;
     if (x > f->maxX) f->maxX = x;
 
-    cout << "test minmaxy" << endl;
     if (y < f->minY) f->minY = y;
     if (y > f->maxY) f->maxY = y;
 
-    cout << "test minmaxrgb" << endl;
     if (f->expressionR)
       r = f->expressionR->evaluate(vals);
 
@@ -84,11 +62,8 @@ void* AttractorFractal::calculateAsync(void* args) {
     Vec3f p = {(float)x, (float)y, (float)z};
     Vec4f c = {(float)r, (float)g, (float)b, alpha};
 
-    cout << "test points" << endl;
     f->points.push_back(p);
-    cout << "test colorss" << endl;
     f->colors.push_back(c);
-    cout << "test pp" << endl;
   }
 
   f->bb.min = Vec3f::makeVec(f->minX, f->minY, f->minZ);
@@ -101,10 +76,7 @@ void* AttractorFractal::calculateAsync(void* args) {
 
 void AttractorFractal::calculate() {
   isCalculated = false;
-  cout << "LIVE?" << endl;
-  cout << alive << endl;
   if (!alive) {
-    cout << "LIVEE" << endl;
     alive = true;
     pthread_create(&calcThread, NULL, calculateAsync, this);
   }
