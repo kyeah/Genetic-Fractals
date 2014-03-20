@@ -3,9 +3,9 @@
 #include "common.h"
 #include "fractal.h"
 
-int createMainWindow(string _name);
+int createMainWindow(string _name, bool saving=false);
 void Repaint();
-void adjustBounds(AttractorFractal f);
+void adjustBounds(AttractorFractal& f);
 void registerCallbacks();
 void resize(int w, int h);
 

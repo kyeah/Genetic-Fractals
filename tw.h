@@ -38,7 +38,7 @@ void TW_CALL twSetPrecisionPoints(const void *value, void *clientData) {
   const int *srcPtr = static_cast<const int *>(value);
   if (PRECISION_POINTS != *srcPtr) {
     setPrecisionPoints(*srcPtr);
-    redrawFractal(&fractals[0]);
+    redrawFractal(mainFractal);
   }
 }
 
@@ -51,7 +51,7 @@ void TW_CALL twSetAlpha(const void *value, void *clientData) {
   const float *srcPtr = static_cast<const float *>(value);
   if (ALPHA != *srcPtr) {
     setAlpha(*srcPtr);
-    redrawFractal(&fractals[0]);
+    redrawFractal(mainFractal);
   }
 }
 

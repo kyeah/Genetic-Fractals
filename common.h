@@ -17,6 +17,7 @@
 #endif
 
 #include "fractal.h"
+#include "Queue.h"
 #pragma hdrstop
 
 struct Color {
@@ -45,6 +46,7 @@ extern Color clearColor;
 extern bool rendering;
 extern int window_width, window_height;
 extern int PRECISION_POINTS;
-extern vector<CliffordAttractor> fractals;
+extern Queue<CliffordAttractor> fractals;
+extern CliffordAttractor *mainFractal;
 
 #endif

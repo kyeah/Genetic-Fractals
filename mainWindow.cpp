@@ -23,18 +23,21 @@ GLfloat rot_matrix[16] = {1, 0, 0, 0,
                           0, 0, 1, 0,
                           0, 0, 0, 1};
 
-vector<CliffordAttractor> fractals;
+Queue<CliffordAttractor> fractals;
+CliffordAttractor *mainFractal;
+
 Color clearColor = kBlack;
 
-int createMainWindow(string _name) {
+int createMainWindow(string _name, bool saving) {
   window_width = glutGet(GLUT_SCREEN_WIDTH);
   window_height = glutGet(GLUT_SCREEN_HEIGHT);
   window_aspect = window_width / static_cast<float>(window_height);
 
-  glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA);
+  int doubleBuffer = (saving ? GLUT_SINGLE : GLUT_DOUBLE);
+  glutInitDisplayMode(doubleBuffer | GLUT_RGBA);
 
-  GLsizei windowX = (glutGet(GLUT_SCREEN_WIDTH)-window_width)/2;
-  GLsizei windowY = (glutGet(GLUT_SCREEN_HEIGHT)-window_height)/2;
+  GLsizei windowX = ( saving ? 1 : (glutGet(GLUT_SCREEN_WIDTH)-window_width)/2 );
+  GLsizei windowY = ( saving ? 1 : (glutGet(GLUT_SCREEN_HEIGHT)-window_height)/2 );
 
   glutInitWindowPosition(windowX, windowY);
   glutInitWindowSize(window_width, window_height);
@@ -56,7 +59,7 @@ int createMainWindow(string _name) {
 /*
   Adjust the camera to fit Fractal f.
 */
-void adjustBounds(AttractorFractal f) {
+void adjustBounds(AttractorFractal& f) {
   glMatrixMode(GL_PROJECTION);
   glLoadIdentity();
   gluPerspective(40.0, window_width/window_height, 1, 1500);
@@ -81,11 +84,8 @@ void adjustBounds(AttractorFractal f) {
 void Repaint() {
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-  int size = fractals.size();
-  for (int i = 0; i < size; i++) {
-    adjustBounds(fractals[i]);
-    fractals[i].paint();
-  }
+  adjustBounds(*mainFractal);
+  mainFractal->paint();
 
   if (rendering) TwDraw();
   glFlush();
@@ -224,7 +224,7 @@ void Keyboard(unsigned char key, int x, int y){
     if (!TwEventKeyboardGLUT(key, x, y)) {
       switch(key){
       case 32:  // (Spacebar) Mutate fractal
-        fractals[0].mutateConstants();
+        mainFractal->mutateConstants();
         zoom = 1;
         glutPostRedisplay();
         break;

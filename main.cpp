@@ -88,18 +88,27 @@ void startDisplay() {
 
 //****************************************
 int main(int argc, char** argv){
+
+  bool savingImage = ( argc >= 3 && strcmp(argv[1],"-save") == 0 );
+  bool runInBackground = ( argc >= 2 && strcmp(argv[1],"-bg") == 0);
+
   glutInit(&argc, argv);
-  createMainWindow("Aesthetic Fractals");
+  createMainWindow("Aesthetic Fractals", savingImage);
 
   // Enable GLEW library for External rendering
-  GLenum err = glewInit();
-  if (GLEW_OK != err) {
-    fprintf(stderr, "Error: %s\n", glewGetErrorString(err));
-    exit(0);
+  if (savingImage || runInBackground) {
+    GLenum err = glewInit();
+    if (GLEW_OK != err) {
+      fprintf(stderr, "Error: %s\n", glewGetErrorString(err));
+      exit(0);
+    }
+  }
+
+  if (runInBackground) {
+    
   }
 
   if (argc >= 3) {
-    bool savingImage = (strcmp(argv[1],"-save") == 0);
     rendering = !savingImage;
     int startIndex = (savingImage ? 2 : 1);
     GLuint renderbuffer;
@@ -142,16 +151,16 @@ int main(int argc, char** argv){
 
       // Calculate points
       CliffordAttractor ca(argv[i], argv[i+1], argv[i+2], argv[i+3], argv[i+4], argv[i+5]);
-      fractals.push_back(ca);
+      mainFractal = &ca;
 
       if (savingImage) {
+        //        fractals.push(*ca);
         Repaint();
         glutHideWindow();
 
         // Save Image
         ExternalRenderer::outputToImage(imgName);
         ca.saveToFile(imgName);
-        fractals.clear();
       } else {
         startDisplay();
       }
@@ -162,7 +171,7 @@ int main(int argc, char** argv){
 
   } else {
     // No fractal definitions provided; draw an example fractal.
-    fractals.push_back(CliffordAttractor("sin(-1.4 * y) + cos(-1.4 * x)", "sin(1.6 * x) + 0.7 * cos(1.6 * y)", "x", "x", "y", "z"));
+    mainFractal = new CliffordAttractor("sin(-1.4 * y) + cos(-1.4 * x)", "sin(1.6 * x) + 0.7 * cos(1.6 * y)", "x", "x", "y", "z");
     //fractals.push_back(CliffordAttractor("sin( a * y ) + c * cos(a * x)", "sin(b * x) + d * cos(b * y)"));
     startDisplay();
   }

@@ -24,27 +24,27 @@ int createFractalEditorWindow() {
   TwAddSeparator(editBar, "Equation Separator", "");
 
   TwAddVarCB(editBar, "X Equation", TW_TYPE_STDSTRING, 
-             AttractorFractal::setXStr, AttractorFractal::getXStr, &(fractals[0]),
+             AttractorFractal::setXStr, AttractorFractal::getXStr, mainFractal,
              "group=Shape");
   
   TwAddVarCB(editBar, "Y Equation", TW_TYPE_STDSTRING, 
-             AttractorFractal::setYStr, AttractorFractal::getYStr, &(fractals[0]),
+             AttractorFractal::setYStr, AttractorFractal::getYStr, mainFractal,
              "group=Shape");
 
   TwAddVarCB(editBar, "Z Equation", TW_TYPE_STDSTRING, 
-             AttractorFractal::setZStr, AttractorFractal::getZStr, &(fractals[0]),
+             AttractorFractal::setZStr, AttractorFractal::getZStr, mainFractal,
              "group=Shape");
 
   TwAddVarCB(editBar, "R Equation", TW_TYPE_STDSTRING, 
-             AttractorFractal::setRStr, AttractorFractal::getRStr, &(fractals[0]),
+             AttractorFractal::setRStr, AttractorFractal::getRStr, mainFractal,
              "group=Color");
 
   TwAddVarCB(editBar, "G Equation", TW_TYPE_STDSTRING, 
-             AttractorFractal::setGStr, AttractorFractal::getGStr, &(fractals[0]),
+             AttractorFractal::setGStr, AttractorFractal::getGStr, mainFractal,
              "group=Color");
 
   TwAddVarCB(editBar, "B Equation", TW_TYPE_STDSTRING, 
-             AttractorFractal::setBStr, AttractorFractal::getBStr, &(fractals[0]),
+             AttractorFractal::setBStr, AttractorFractal::getBStr, mainFractal,
              "group=Color");
 
   // Allow users to toggle between center-view mode and WASD/Camera movement.
