@@ -73,6 +73,7 @@ class AttractorFractal {
   bool isReady() { return isCalculated; } 
   int getNumPoints() { return points.size(); }
   string getName() { return name; }
+  pthread_t getCalcThread() { return calcThread; }
   static void* calculateAsync(void*);
   void calculate();
   bool paint();

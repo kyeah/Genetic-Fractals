@@ -29,11 +29,13 @@ CliffordAttractor *mainFractal;
 Color clearColor = kBlack;
 
 int createMainWindow(string _name, bool saving) {
+  
   window_width = glutGet(GLUT_SCREEN_WIDTH);
   window_height = glutGet(GLUT_SCREEN_HEIGHT);
   window_aspect = window_width / static_cast<float>(window_height);
 
-  int doubleBuffer = (saving ? GLUT_SINGLE : GLUT_DOUBLE);
+  //  int doubleBuffer = (saving ? GLUT_SINGLE : GLUT_DOUBLE);
+  int doubleBuffer = GLUT_DOUBLE;
   glutInitDisplayMode(doubleBuffer | GLUT_RGBA);
 
   GLsizei windowX = ( saving ? 1 : (glutGet(GLUT_SCREEN_WIDTH)-window_width)/2 );

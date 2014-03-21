@@ -3,6 +3,7 @@
 
 #include "common.h"
 #include "fractal.h"
+#include "mainWindow.h"
 #include "rng.h"
 
 int PRECISION_POINTS = 1000000;
@@ -71,7 +72,10 @@ void* AttractorFractal::calculateAsync(void* args) {
   f->isCalculated = true;
   f->alive = false;
   waiting = false;
-  glutPostRedisplay();
+
+  if (rendering) {
+    glutPostRedisplay();
+  }
 }
 
 void AttractorFractal::calculate() {

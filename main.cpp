@@ -115,7 +115,7 @@ int main(int argc, char** argv){
     rendering = !savingImage;
     int startIndex = (savingImage ? 2 : 1);
     GLuint renderbuffer;
-    char* imgName;
+    char* imgName = "test";
 
     if (savingImage) {
       /*
@@ -154,14 +154,18 @@ int main(int argc, char** argv){
 
       // Calculate points
       CliffordAttractor ca(imgName, argv[i], argv[i+1], argv[i+2], argv[i+3], argv[i+4], argv[i+5]);
-      mainFractal = &ca;
+      mainFractal = new CliffordAttractor(imgName, argv[i], argv[i+1], argv[i+2], argv[i+3], argv[i+4], argv[i+5]);
+      //      mainFractal = &ca;
 
       if (savingImage) {
-        //        fractals.push(*ca);
-        Repaint();
+        mainFractal->calculate();
         glutHideWindow();
+        
+        pthread_join(mainFractal->getCalcThread(), NULL);
+        Repaint();
+        ExternalRenderer::outputToImage(mainFractal->getName());
+        mainFractal->saveToFile(mainFractal->getName());
 
-        pthread_exit(0);
       } else {
         startDisplay();
       }
@@ -173,7 +177,7 @@ int main(int argc, char** argv){
     mainFractal = new CliffordAttractor("test", "sin( a * y ) + c * cos(a * x)", "sin(b * x) + d * cos(b * y)", "x", "x", "y", "z");
     startDisplay();
   }
-
+  
   return 0;
 }
 
