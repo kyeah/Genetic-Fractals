@@ -29,7 +29,7 @@ CliffordAttractor *mainFractal;
 Color clearColor = kBlack;
 
 int createMainWindow(string _name, bool saving) {
-  
+
   window_width = glutGet(GLUT_SCREEN_WIDTH);
   window_height = glutGet(GLUT_SCREEN_HEIGHT);
   window_aspect = window_width / static_cast<float>(window_height);
@@ -76,7 +76,7 @@ void adjustBounds(AttractorFractal& f) {
   z = (bbox.max[2] + bbox.min[2]) / 2.0f;
   r = sqrt((bbox.max[0] - x)*(bbox.max[0] - x) + (bbox.max[1] - y)*(bbox.max[1] - y) + (bbox.max[2] - z)*(bbox.max[2] - z));
   fdistance = r / .3697f;
-  
+
   gluLookAt(0.0f, 0.0f, fdistance*zoom, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f);
   glTranslatef(-x, -y, -z);
 
@@ -86,6 +86,15 @@ void adjustBounds(AttractorFractal& f) {
 //****************************************
 void drawLoader() {
   static float angle = 1.0;
+  static double framedelay = 1000.0 / 60.0;
+  static double lastTime = 0;
+
+  double currTime = glutGet(GLUT_ELAPSED_TIME);
+  if (currTime - lastTime >= framedelay) {
+    lastTime = currTime;
+    angle+=5;
+  }
+
   glShadeModel(GL_SMOOTH);
   glEnable(GL_LIGHTING);
   glEnable(GL_LIGHT0);
@@ -114,8 +123,6 @@ void drawLoader() {
     glTranslatef(0.2,0,0);
     glutSolidCube(0.05);
   }
-
-  angle+=5;
 }
 
 void Repaint() {
