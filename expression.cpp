@@ -16,13 +16,14 @@ const unordered_set<string> Node::unary_ops = {"sin", "cos", "tan", "abs", "!"};
 const unordered_set<string> Node::binary_ops = {"+", "-", "*", "/", "^", "%"};
 const unordered_set<string> Node::ternary_ops = {"if"};
 
+/*
 vector<string> * Node::vars;
 vector<string> * Node::consts;
 vector<double> * Node::values;
 vector<double> * Node::constVals;
 int Node::numVars;
 int Node::numConsts;
-
+*/
 /////////////////////////////////////////////////////////////////////////////////////
 
 Node* createNode(string _val) {
@@ -43,24 +44,24 @@ Node* createNode(string _val) {
 }
 
 double Node::evaluate(int n, int nc, vector<string> *v, vector<string> *c, vector<double> *vals, vector<double> *cvals) {
-  numVars = n;
+  /*  numVars = n;
   numConsts = nc;
   vars = v;
   consts = c;
   values = vals;
   constVals = cvals;
-
-  return evalTree();
+  */
+  return evalTree(n, nc, v, c, vals, cvals);
 }
 
 /////////////////////////////////////////////////////////////////////////////////////
 
-double UnaryNode::evalTree() {
-  if (value == "sin")       return sin(center->evalTree());
-  else if (value == "cos")  return cos(center->evalTree());
-  else if (value == "tan")  return tan(center->evalTree());
-  else if (value == "abs")  return abs(center->evalTree());
-  else if (value == "!")    return !center->evalTree();
+double UnaryNode::evalTree(int numVars, int numConsts, vector<string> *vars, vector<string> *consts, vector<double> *values, vector<double> *constVals) {
+  if (value == "sin")       return sin(center->evalTree(numVars,numConsts,vars,consts,values,constVals));
+  else if (value == "cos")  return cos(center->evalTree(numVars,numConsts,vars,consts,values,constVals));
+  else if (value == "tan")  return tan(center->evalTree(numVars,numConsts,vars,consts,values,constVals));
+  else if (value == "abs")  return abs(center->evalTree(numVars,numConsts,vars,consts,values,constVals));
+  else if (value == "!")    return !center->evalTree(numVars,numConsts,vars,consts,values,constVals);
   else return 0.0;
 }
 
@@ -77,13 +78,13 @@ void UnaryNode::printTreeRPN() {
 
 //////////////////////////////////////////////////////////////////////////////////////
 
-double BinaryNode::evalTree() {
-  if (value == "+")      return left->evalTree() + right->evalTree();
-  else if (value == "-") return left->evalTree() - right->evalTree();
-  else if (value == "*") return left->evalTree() * right->evalTree();
-  else if (value == "/") return left->evalTree() / right->evalTree();
-  else if (value == "^") return pow(left->evalTree(), right->evalTree());
-  else if (value == "%") return fmod(left->evalTree(), right->evalTree());
+double BinaryNode::evalTree(int numVars, int numConsts, vector<string> *vars, vector<string> *consts, vector<double> *values, vector<double> *constVals) {
+  if (value == "+")      return left->evalTree(numVars,numConsts,vars,consts,values,constVals) + right->evalTree(numVars,numConsts,vars,consts,values,constVals);
+  else if (value == "-") return left->evalTree(numVars,numConsts,vars,consts,values,constVals) - right->evalTree(numVars,numConsts,vars,consts,values,constVals);
+  else if (value == "*") return left->evalTree(numVars,numConsts,vars,consts,values,constVals) * right->evalTree(numVars,numConsts,vars,consts,values,constVals);
+  else if (value == "/") return left->evalTree(numVars,numConsts,vars,consts,values,constVals) / right->evalTree(numVars,numConsts,vars,consts,values,constVals);
+  else if (value == "^") return pow(left->evalTree(numVars,numConsts,vars,consts,values,constVals), right->evalTree(numVars,numConsts,vars,consts,values,constVals));
+  else if (value == "%") return fmod(left->evalTree(numVars,numConsts,vars,consts,values,constVals), right->evalTree(numVars,numConsts,vars,consts,values,constVals));
   else return 0.0;
 }
 
@@ -101,8 +102,8 @@ void BinaryNode::printTreeRPN() {
 
 //////////////////////////////////////////////////////////////////////////////////////
 
-double TernaryNode::evalTree() {
-  if (value == "if") return (left->evalTree() ? center->evalTree() : right->evalTree());
+double TernaryNode::evalTree(int numVars, int numConsts, vector<string> *vars, vector<string> *consts, vector<double> *values, vector<double> *constVals) {
+  if (value == "if") return (left->evalTree(numVars,numConsts,vars,consts,values,constVals) ? center->evalTree(numVars,numConsts,vars,consts,values,constVals) : right->evalTree(numVars,numConsts,vars,consts,values,constVals));
   else return 0.0;
 }
 
@@ -127,7 +128,7 @@ void TernaryNode::printTreeRPN() {
 
 //////////////////////////////////////////////////////////////////////////////////////
 
-double VarNode::evalTree() {
+double VarNode::evalTree(int numVars, int numConsts, vector<string> *vars, vector<string> *consts, vector<double> *values, vector<double> *constVals) {
   for (int i = 0; i < numVars; i++) {
     if (value == (*vars)[i])
       return (*values)[i];
@@ -150,7 +151,7 @@ void VarNode::printTreeRPN() {
 
 //////////////////////////////////////////////////////////////////////////////////////
 
-double NumNode::evalTree() {
+double NumNode::evalTree(int numVars, int numConsts, vector<string> *vars, vector<string> *consts, vector<double> *values, vector<double> *constVals) {
   return constval;
 }
 

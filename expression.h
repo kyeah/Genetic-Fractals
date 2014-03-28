@@ -38,12 +38,12 @@ class Node {
   static const unordered_set<string> ternary_ops;
 
   // Set when calling evaluate to prevent recursive passing
-  static vector<string> *vars;
+  /*  static vector<string> *vars;
   static vector<string> *consts;
   static vector<double> *values;
   static vector<double> *constVals;
   static int numVars;
-  static int numConsts;
+  static int numConsts;*/
 
  public:
   Node() {}
@@ -65,7 +65,8 @@ class Node {
   double evaluate(int n, int nc, vector<string> *vars, vector<string> *consts,
                   vector<double> *values, vector<double> *constVals);
 
-  virtual double evalTree() = 0;
+  virtual double evalTree(int numVars, int numConsts, vector<string> *vars, vector<string> *consts,
+                          vector<double> *values, vector<double> *constVals) = 0;
   virtual void printTree() = 0;
   virtual void printTreeRPN() = 0;
 };
@@ -90,7 +91,8 @@ class UnaryNode : public Node {
     return center;
   }
 
-  double evalTree();
+  double evalTree(int numVars, int numConsts, vector<string> *vars, vector<string> *consts,
+                          vector<double> *values, vector<double> *constVals);
   void printTree();
   void printTreeRPN();
 };
@@ -123,7 +125,8 @@ class BinaryNode : public Node {
     return prev;
   }
 
-  double evalTree();
+  double evalTree(int numVars, int numConsts, vector<string> *vars, vector<string> *consts,
+                          vector<double> *values, vector<double> *constVals);
   void printTree();
   void printTreeRPN();
 };
@@ -163,7 +166,8 @@ class TernaryNode : public Node {
     return prev;
   }
 
-  double evalTree();
+  double evalTree(int numVars, int numConsts, vector<string> *vars, vector<string> *consts,
+                          vector<double> *values, vector<double> *constVals);
   void printTree();
   void printTreeRPN();
 
@@ -177,7 +181,8 @@ class VarNode : public Node {
     type = TYPE_VAR;
   }
 
-  double evalTree();
+  double evalTree(int numVars, int numConsts, vector<string> *vars, vector<string> *consts,
+                          vector<double> *values, vector<double> *constVals);
   void printTree();
   void printTreeRPN();
 };
@@ -202,7 +207,8 @@ class NumNode : public Node {
 
   double getConstVal() { return constval; }
 
-  double evalTree();
+  double evalTree(int numVars, int numConsts, vector<string> *vars, vector<string> *consts,
+                          vector<double> *values, vector<double> *constVals);
   void printTree();
   void printTreeRPN();
 };
