@@ -7,7 +7,7 @@
 
 #include <fcntl.h>
 
-#include "libs/expressionParser.h"
+#include "expressionParser.h"
 #include "expression.h"
 
 using namespace std;
@@ -23,13 +23,15 @@ vector<double> * Node::constVals;
 int Node::numVars;
 int Node::numConsts;
 
+/////////////////////////////////////////////////////////////////////////////////////
+
 Node* createNode(string _val) {
   if (Node::unary_ops.find(_val) != Node::unary_ops.end()) {
     return new UnaryNode(_val);
   } else if (Node::binary_ops.find(_val) != Node::binary_ops.end()) {
     return new BinaryNode(_val);
-    //  } else if (Node::ternary_ops.find(_val) != Node::ternary_ops.end()) {
-    //    return new TernaryNode(_val);
+  } else if (Node::ternary_ops.find(_val) != Node::ternary_ops.end()) {
+    return new TernaryNode(_val);
   } else {
     char* fail;
     double constval = strtod(_val.c_str(), &fail);
@@ -49,6 +51,112 @@ double Node::evaluate(int n, int nc, vector<string> *v, vector<string> *c, vecto
   constVals = cvals;
   return evalTree();
 }
+
+/////////////////////////////////////////////////////////////////////////////////////
+
+double UnaryNode::evalTree() {
+  if (value == "sin")       return sin(center->evalTree());
+  else if (value == "cos")  return cos(center->evalTree());
+  else if (value == "tan")  return tan(center->evalTree());
+  else if (value == "abs")  return abs(center->evalTree());
+  else return 0.0;
+}
+
+void UnaryNode::printTree() {
+  std::cout << value << "(";
+  center->printTree();
+  std::cout << ") ";
+}
+
+void UnaryNode::printTreeRPN() {
+  center->printTreeRPN();
+  std::cout << value << " ";
+}
+
+//////////////////////////////////////////////////////////////////////////////////////
+
+double BinaryNode::evalTree() {
+  if (value == "+")      return left->evalTree() + right->evalTree();
+  else if (value == "-") return left->evalTree() - right->evalTree();
+  else if (value == "/") return left->evalTree() / right->evalTree();
+  else if (value == "*") return left->evalTree() * right->evalTree();
+  else if (value == "^") return pow(left->evalTree(), right->evalTree());
+  else return 0.0;
+}
+
+void BinaryNode::printTree() {
+  left->printTree();
+  cout << value << " ";
+  right->printTree();
+}
+
+void BinaryNode::printTreeRPN() {
+  left->printTreeRPN();
+  right->printTreeRPN();
+  cout << value << " ";
+}
+
+//////////////////////////////////////////////////////////////////////////////////////
+
+double TernaryNode::evalTree() {
+  if (value == "if") return (left->evalTree() ? center->evalTree() : right->evalTree());
+  else return 0.0;
+}
+
+void TernaryNode::printTree() {
+  if (value == "if") {
+    cout << "[if :: (";
+    left->printTree();
+    cout << ") then (";
+    center->printTree();
+    cout << ") else (";
+    right->printTree();
+    cout << ") ";
+  }
+}
+
+void TernaryNode::printTreeRPN() {
+  printTree();
+}
+
+//////////////////////////////////////////////////////////////////////////////////////
+
+double VarNode::evalTree() {
+  for (int i = 0; i < numVars; i++) {
+    if (value == (*vars)[i])
+      return (*values)[i];
+  }
+  for (int i = 0; i < numConsts; i++) {
+    if (value == (*consts)[i])
+      return (*constVals)[i];
+  }
+
+  return 0.0;
+}
+
+void VarNode::printTree() {
+  cout << value << " ";
+}
+
+void VarNode::printTreeRPN() {
+  cout << value << " ";
+}
+
+//////////////////////////////////////////////////////////////////////////////////////
+
+double NumNode::evalTree() {
+  return constval;
+}
+
+void NumNode::printTree() {
+  cout << value << " ";
+}
+
+void NumNode::printTreeRPN() {
+  cout << value << " ";
+}
+
+//////////////////////////////////////////////////////////////////////////////////////
 
 Expression::Expression(string infixExpression, vector<string> consts, vector<string> vars) {
   infixString = infixExpression;
@@ -99,47 +207,6 @@ void Expression::createTree(vector<string> tokens) {
 double Expression::evaluate(vector<double> values) {
   if (!root) return -1;
   return root->evaluate(numVars, numConsts, &vars, &consts, &values, &constVals);
-
-  //return evalTree(root, values);
-}
-
-double Expression::evalTree(Node *n, vector<double> values) {
-  /*  if (!n) return -1;
-
-      string token = n->getValue();
-
-      if (n->isVar()) {
-      // Variable e.g. x,y,z or Const e.g. a,b,c,d...
-      for (int i = 0; i < numVars; i++) {
-      if (token == vars[i])
-      return values[i];
-      }
-      for (int i = 0; i < numConsts; i++) {
-      if (token == consts[i])
-      return constVals[i];
-      }
-
-      } else if (n->isNum()) {
-      // Hardcoded constant e.g. 1.4
-      return n->getConstVal();
-
-      } else if (n->isBinaryOp()) {
-      // Binary Operator on left and right child
-      if (token == "+")      return evalTree(n->getLeft(), values) + evalTree(n->getRight(), values);
-      else if (token == "-") return evalTree(n->getLeft(), values) - evalTree(n->getRight(), values);
-      else if (token == "/") return evalTree(n->getLeft(), values) / evalTree(n->getRight(), values);
-      else if (token == "*") return evalTree(n->getLeft(), values) * evalTree(n->getRight(), values);
-      else if (token == "^") return pow(evalTree(n->getLeft(), values), evalTree(n->getRight(), values));
-
-      } else if (n->isUnaryOp()) {
-      // Unary Operator on right child
-      if (token == "sin")       return sin(evalTree(n->getRight(), values));
-      else if (token == "cos")  return cos(evalTree(n->getRight(), values));
-      else if (token == "tan")  return tan(evalTree(n->getRight(), values));
-      else if (token == "abs")  return abs(evalTree(n->getRight(), values));
-      }
-
-      return 0.0;*/
 }
 
 void Expression::printInfixString() {

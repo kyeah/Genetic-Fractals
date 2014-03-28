@@ -16,6 +16,21 @@ using namespace std;
 #define TYPE_NUM 3
 #define TYPE_VAR 4
 
+/*
+  Node
+  =====
+  UnaryNode :: {"sin", "cos", "tan", "abs"}
+  BinaryNode :: {"+", "-", "*", "/", "^"}
+  TernaryNode :: {"if"}
+  VarNode :: Variables (x,y,z) and unspecified constants (a,b,c,d)
+  NumNode :: Specified constants ("1.5")
+
+  Expression
+  ===========
+  Parse Tree Representation Class
+
+*/
+
 class Node {
  public:
   static const unordered_set<string> unary_ops;
@@ -33,11 +48,11 @@ class Node {
  public:
   Node() {}
  Node(string _val): value(_val) {}
-  
+
  protected:
   string value;
   int type;
-  
+
  public:
   string getValue() { return value; }
   bool isLeaf() { return !isOp(); }
@@ -47,11 +62,15 @@ class Node {
   bool isUnaryOp() { return type == TYPE_UNARY; }
   bool isBinaryOp() { return type == TYPE_BINARY; }
   bool isTernaryOp() { return type == TYPE_TERNARY; }
-  double evaluate(int n, int nc, vector<string> *vars, vector<string> *consts, vector<double> *values, vector<double> *constVals);
+  double evaluate(int n, int nc, vector<string> *vars, vector<string> *consts,
+                  vector<double> *values, vector<double> *constVals);
+
   virtual double evalTree() = 0;
   virtual void printTree() = 0;
   virtual void printTreeRPN() = 0;
 };
+
+////////////////////////////////////////////////////////////////////////////////
 
 class UnaryNode : public Node {
  public:
@@ -64,33 +83,19 @@ class UnaryNode : public Node {
   Node *center;
 
  public:
+  Node *getCenter() { return center; }
   Node *setCenter(Node *newNode) {
     Node *prev = center;
     center = newNode;
     return center;
   }
 
-  Node *getCenter() { return center; }
-
-  double evalTree() {
-    if (value == "sin")       return sin(center->evalTree());
-    else if (value == "cos")  return cos(center->evalTree());
-    else if (value == "tan")  return tan(center->evalTree());
-    else if (value == "abs")  return abs(center->evalTree());
-    else return 0.0;
-  }
-
-  void printTree() {
-    std::cout << value << "(";
-    center->printTree();
-    std::cout << ") ";
-  }
-
-  void printTreeRPN() {
-    center->printTreeRPN();
-    std::cout << value << " ";
-  }
+  double evalTree();
+  void printTree();
+  void printTreeRPN();
 };
+
+////////////////////////////////////////////////////////////////////////////////
 
 class BinaryNode : public Node {
  public:
@@ -104,6 +109,9 @@ class BinaryNode : public Node {
   Node *left, *right;
 
  public:
+  Node *getLeft() { return left; }
+  Node *getRight() { return right; }
+
   Node *setLeft(Node *newNode) {
     Node *prev = left;
     left = newNode;
@@ -115,32 +123,53 @@ class BinaryNode : public Node {
     return prev;
   }
 
+  double evalTree();
+  void printTree();
+  void printTreeRPN();
+};
+
+////////////////////////////////////////////////////////////////////////////////
+
+class TernaryNode : public Node {
+ public:
+ TernaryNode(string _val): Node(_val) {
+    left = NULL;
+    center = NULL;
+    right = NULL;
+    type = TYPE_TERNARY;
+  }
+
+ private:
+  Node *left, *center, *right;
+
+ public:
   Node *getLeft() { return left; }
+  Node *getCenter() { return center; }
   Node *getRight() { return right; }
 
-  double evalTree() {
-    if (value == "+")      return left->evalTree() + right->evalTree();
-    else if (value == "-") return left->evalTree() - right->evalTree();
-    else if (value == "/") return left->evalTree() / right->evalTree();
-    else if (value == "*") return left->evalTree() * right->evalTree();
-    else if (value == "^") return pow(left->evalTree(), right->evalTree());
-    else {
-      return 0.0;
-    }
+  Node *setLeft(Node *newNode) {
+    Node *prev = left;
+    left = newNode;
+    return prev;
+  }
+  Node *setCenter(Node *newNode) {
+    Node *prev = center;
+    center = newNode;
+    return prev;
+  }
+  Node *setRight(Node *newNode) {
+    Node *prev = right;
+    right = newNode;
+    return prev;
   }
 
-  void printTree() {
-    left->printTree();
-    cout << value << " ";
-    right->printTree();
-  }
+  double evalTree();
+  void printTree();
+  void printTreeRPN();
 
-  void printTreeRPN() {
-    left->printTreeRPN();
-    right->printTreeRPN();
-    cout << value << " ";
-  }
 };
+
+////////////////////////////////////////////////////////////////////////////////
 
 class VarNode : public Node {
  public:
@@ -148,27 +177,12 @@ class VarNode : public Node {
     type = TYPE_VAR;
   }
 
-  double evalTree() {
-    for (int i = 0; i < numVars; i++) {
-      if (value == (*vars)[i])
-        return (*values)[i];
-    }
-    for (int i = 0; i < numConsts; i++) {
-      if (value == (*consts)[i])
-        return (*constVals)[i];
-    }
-
-    return 0.0;
-  }
-
-  void printTree() {
-    cout << value << " ";
-  }
-
-  void printTreeRPN() {
-    cout << value << " ";
-  }
+  double evalTree();
+  void printTree();
+  void printTreeRPN();
 };
+
+////////////////////////////////////////////////////////////////////////////////
 
 class NumNode : public Node {
  public:
@@ -187,19 +201,13 @@ class NumNode : public Node {
   }
 
   double getConstVal() { return constval; }
-  
-  double evalTree() {  
-    return constval;
-  }
 
-  void printTree() {
-    std::cout << value << " ";
-  }
-
-  void printTreeRPN() {
-    std::cout << value << " ";
-  }
+  double evalTree();
+  void printTree();
+  void printTreeRPN();
 };
+
+////////////////////////////////////////////////////////////////////////////////
 
 class Expression {
  public:
@@ -224,7 +232,6 @@ class Expression {
 
   void createTree(vector<string> tokens);
   double evaluate(vector<double> values);
-  double evalTree(Node *n, vector<double> values);
 
   void constructConstants();
   void mutateConstants();

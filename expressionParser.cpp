@@ -6,6 +6,12 @@ const double e = 2.71828182846;
 
 static std::set<std::string> *vars;
 
+/*
+  This expression parser is an extension of the parser provided by Andrew Webb, author of Technical-Recipes.com.
+
+  @author: Kevin Yeh
+ */
+
 int Modulo(int num, int div)
 {
    int mod = num % div;

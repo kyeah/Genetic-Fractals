@@ -42,8 +42,8 @@ expression.o: expression.cpp expression.h libs/expressionParser.h
 fractal.o: fractal.cpp fractal.h vec.h types.h common.h rng.h tw.h
 	${CC} -c ${CFLAGS} $(INCLUDE) fractal.cpp
 
-expressionParser.o: libs/expressionParser.cpp libs/expressionParser.h
-	${CC} -c ${CFLAGS} $(INCLUDE) libs/expressionParser.cpp
+expressionParser.o: expressionParser.cpp expressionParser.h
+	${CC} -c ${CFLAGS} $(INCLUDE) expressionParser.cpp
 
 fbo.o: fbo.cpp fbo.h common.h
 	${CC} -c ${CFLAGS} $(INCLUDE) fbo.cpp
