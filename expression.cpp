@@ -12,6 +12,74 @@
 
 using namespace std;
 
+const unordered_set<string> Node::unary_ops = {"sin", "cos", "tan", "abs"};
+const unordered_set<string> Node::binary_ops = {"+", "-", "*", "/", "^"};
+const unordered_set<string> Node::ternary_ops = {"if"};
+
+vector<string> * Node::vars;
+vector<string> * Node::consts;
+vector<double> * Node::values;
+vector<double> * Node::constVals;
+int Node::numVars;
+int Node::numConsts;
+
+Node* createNode(string _val) {
+  if (Node::unary_ops.find(_val) != Node::unary_ops.end()) {
+    return new UnaryNode(_val);
+  } else if (Node::binary_ops.find(_val) != Node::binary_ops.end()) {
+    return new BinaryNode(_val);
+    //  } else if (Node::ternary_ops.find(_val) != Node::ternary_ops.end()) {
+    //    return new TernaryNode(_val);
+  } else {
+    char* fail;
+    double constval = strtod(_val.c_str(), &fail);
+    if (*fail != '\0')
+      return new VarNode(_val);
+    else
+      return new NumNode(_val, constval);
+  }
+}
+
+double UnaryNode::evaluate(int n, int nc, vector<string> *v, vector<string> *c, vector<double> *vals, vector<double> *cvals) {
+  numVars = n;
+  numConsts = nc;
+  vars = v;
+  consts = c;
+  values = vals;
+  constVals = cvals;
+  return evalTree();
+}
+
+double BinaryNode::evaluate(int n, int nc, vector<string> *v, vector<string> *c, vector<double> *vals, vector<double> *cvals) {
+  numVars = n;
+  numConsts = nc;
+  vars = v;
+  consts = c;
+  values = vals;
+  constVals = cvals;
+  return evalTree();
+}
+
+/*double TernaryNode::evaluate(int n, int nc, vector<string> *v, vector<string> *c, vector<double> *vals, vector<double> *cvals) {
+  numVars = n;
+  numConsts = nc;
+  vars = v;
+  consts = c;
+  values = vals;
+  constVals = cvals;
+  return evalTree();
+  }*/
+
+double VarNode::evaluate(int n, int nc, vector<string> *v, vector<string> *c, vector<double> *vals, vector<double> *cvals) {
+  numVars = n;
+  numConsts = nc;
+  vars = v;
+  consts = c;
+  values = vals;
+  constVals = cvals;
+  return evalTree();
+}
+
 Expression::Expression(string infixExpression, vector<string> consts, vector<string> vars) {
   infixString = infixExpression;
 
@@ -39,15 +107,17 @@ void Expression::createTree(vector<string> tokens) {
   stack<Node*> stack;
 
   for (vector<string>::iterator itr = tokens.begin(); itr != tokens.end(); ++itr) {
-    Node *n = new Node(*itr);
+    Node *n = createNode(*itr);
     if (n->isBinaryOp()) {
       Node *right = stack.top(); stack.pop();
       Node *left = stack.top(); stack.pop();
-      n->setLeft(left);
-      n->setRight(right);
+      BinaryNode *bn = (BinaryNode*)n;
+      bn->setLeft(left);
+      bn->setRight(right);
     } else if (n->isUnaryOp()) {
-      Node *right = stack.top(); stack.pop();
-      n->setRight(right);
+      Node *center = stack.top(); stack.pop();
+      UnaryNode *un = (UnaryNode*)n;
+      un->setCenter(center);
     }
 
     stack.push(n);
@@ -57,46 +127,49 @@ void Expression::createTree(vector<string> tokens) {
 }
 
 double Expression::evaluate(vector<double> values) {
-  return evalTree(root, values);
+  if (!root) return -1;
+  return root->evaluate(numVars, numConsts, &vars, &consts, &values, &constVals);
+
+  //return evalTree(root, values);
 }
 
 double Expression::evalTree(Node *n, vector<double> values) {
-  if (!n) return -1;
-  
-  string token = n->getValue();
+  /*  if (!n) return -1;
 
-  if (n->isVar()) {
-    // Variable e.g. x,y,z or Const e.g. a,b,c,d...  
-    for (int i = 0; i < numVars; i++) {
-      if (token == vars[i]) 
-        return values[i];
-    }
-    for (int i = 0; i < numConsts; i++) {
+      string token = n->getValue();
+
+      if (n->isVar()) {
+      // Variable e.g. x,y,z or Const e.g. a,b,c,d...
+      for (int i = 0; i < numVars; i++) {
+      if (token == vars[i])
+      return values[i];
+      }
+      for (int i = 0; i < numConsts; i++) {
       if (token == consts[i])
-        return constVals[i];
-    }
+      return constVals[i];
+      }
 
-  } else if (n->isNum()) {
-    // Hardcoded constant e.g. 1.4
-    return n->getConstVal();
-    
-  } else if (n->isBinaryOp()) {
-    // Binary Operator on left and right child
-    if (token == "+")      return evalTree(n->getLeft(), values) + evalTree(n->getRight(), values);
-    else if (token == "-") return evalTree(n->getLeft(), values) - evalTree(n->getRight(), values);
-    else if (token == "/") return evalTree(n->getLeft(), values) / evalTree(n->getRight(), values);
-    else if (token == "*") return evalTree(n->getLeft(), values) * evalTree(n->getRight(), values);
-    else if (token == "^") return pow(evalTree(n->getLeft(), values), evalTree(n->getRight(), values));
+      } else if (n->isNum()) {
+      // Hardcoded constant e.g. 1.4
+      return n->getConstVal();
 
-  } else if (n->isUnaryOp()) {
-    // Unary Operator on right child
-    if (token == "sin")       return sin(evalTree(n->getRight(), values));
-    else if (token == "cos")  return cos(evalTree(n->getRight(), values));
-    else if (token == "tan")  return tan(evalTree(n->getRight(), values));
-    else if (token == "abs")  return abs(evalTree(n->getRight(), values));
-  }
-  
-  return 0.0;
+      } else if (n->isBinaryOp()) {
+      // Binary Operator on left and right child
+      if (token == "+")      return evalTree(n->getLeft(), values) + evalTree(n->getRight(), values);
+      else if (token == "-") return evalTree(n->getLeft(), values) - evalTree(n->getRight(), values);
+      else if (token == "/") return evalTree(n->getLeft(), values) / evalTree(n->getRight(), values);
+      else if (token == "*") return evalTree(n->getLeft(), values) * evalTree(n->getRight(), values);
+      else if (token == "^") return pow(evalTree(n->getLeft(), values), evalTree(n->getRight(), values));
+
+      } else if (n->isUnaryOp()) {
+      // Unary Operator on right child
+      if (token == "sin")       return sin(evalTree(n->getRight(), values));
+      else if (token == "cos")  return cos(evalTree(n->getRight(), values));
+      else if (token == "tan")  return tan(evalTree(n->getRight(), values));
+      else if (token == "abs")  return abs(evalTree(n->getRight(), values));
+      }
+
+      return 0.0;*/
 }
 
 void Expression::printInfixString() {
@@ -105,35 +178,35 @@ void Expression::printInfixString() {
 
 void Expression::printConstants() {
   for (int i = 0; i < numConsts && i < constVals.size(); i++)  {
-    
-    cout << consts[i] << " = " << constVals[i] << endl;    
+
+    cout << consts[i] << " = " << constVals[i] << endl;
   }
 }
 
-void Expression::print() { 
-  printTree(root); 
-  cout << endl; 
+void Expression::print() {
+  printTree(root);
+  cout << endl;
   printConstants();
 }
 void Expression::printRPN() {
-  printTreeRPN(root); 
-  cout << endl; 
+  printTreeRPN(root);
+  cout << endl;
   printConstants();
 }
 
 void Expression::printTree(Node *n) {
   if (!n) return;
-  
-  printTree(n->getLeft());
-  cout << n->getValue() << " ";
-  printTree(n->getRight());
+
+  //  printTree(n->getLeft());
+  //  cout << n->getValue() << " ";
+  //  printTree(n->getRight());
 }
 
 void Expression::printTreeRPN(Node *n) {
   if (!n) return;
-  
-  printTreeRPN(n->getLeft());
-  printTreeRPN(n->getRight());
+
+  //  printTreeRPN(n->getLeft());
+  //  printTreeRPN(n->getRight());
   cout << n->getValue() << " ";
 }
 
@@ -145,7 +218,7 @@ void Expression::setString(string s) {
 
   // Represent expression with a parse tree
   infixStringToRPN(s, &rpnTokens);
-  createTree(rpnTokens);  
+  createTree(rpnTokens);
 }
 
 string Expression::getString() const {
