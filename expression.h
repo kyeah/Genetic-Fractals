@@ -19,8 +19,8 @@ using namespace std;
 /*
   Node
   =====
-  UnaryNode :: {"sin", "cos", "tan", "abs"}
-  BinaryNode :: {"+", "-", "*", "/", "^"}
+  UnaryNode :: {"sin", "cos", "tan", "abs", "!"}
+  BinaryNode :: {"+", "-", "*", "/", "^", "%"}
   TernaryNode :: {"if"}
   VarNode :: Variables (x,y,z) and unspecified constants (a,b,c,d)
   NumNode :: Specified constants ("1.5")

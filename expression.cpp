@@ -12,8 +12,8 @@
 
 using namespace std;
 
-const unordered_set<string> Node::unary_ops = {"sin", "cos", "tan", "abs"};
-const unordered_set<string> Node::binary_ops = {"+", "-", "*", "/", "^"};
+const unordered_set<string> Node::unary_ops = {"sin", "cos", "tan", "abs", "!"};
+const unordered_set<string> Node::binary_ops = {"+", "-", "*", "/", "^", "%"};
 const unordered_set<string> Node::ternary_ops = {"if"};
 
 vector<string> * Node::vars;
@@ -59,6 +59,7 @@ double UnaryNode::evalTree() {
   else if (value == "cos")  return cos(center->evalTree());
   else if (value == "tan")  return tan(center->evalTree());
   else if (value == "abs")  return abs(center->evalTree());
+  else if (value == "!")    return !center->evalTree();
   else return 0.0;
 }
 
@@ -78,9 +79,10 @@ void UnaryNode::printTreeRPN() {
 double BinaryNode::evalTree() {
   if (value == "+")      return left->evalTree() + right->evalTree();
   else if (value == "-") return left->evalTree() - right->evalTree();
-  else if (value == "/") return left->evalTree() / right->evalTree();
   else if (value == "*") return left->evalTree() * right->evalTree();
+  else if (value == "/") return left->evalTree() / right->evalTree();
   else if (value == "^") return pow(left->evalTree(), right->evalTree());
+  else if (value == "%") return fmod(left->evalTree(), right->evalTree());
   else return 0.0;
 }
 
