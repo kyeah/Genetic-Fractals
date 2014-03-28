@@ -71,7 +71,7 @@ bool saveToPNG(string filename, GLubyte *buffer) {
   
   //  int rowStride = (image_width * 3 + 3) & ~0x3;
   //  int rowStride = (image_width * 4 + 3) & ~0x3;
-  int rowStride = (image_width * 4 + 4) & ~0x7;
+  int rowStride = image_width * 4;
 
   png_bytep* row_pointers = new png_bytep[image_height];
   for (int i = 0; i < image_height; i++)
