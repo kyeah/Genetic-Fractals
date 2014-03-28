@@ -201,6 +201,14 @@ void Expression::createTree(vector<string> tokens) {
       Node *center = stack.top(); stack.pop();
       UnaryNode *un = (UnaryNode*)n;
       un->setCenter(center);
+    } else if (n->isTernaryOp()) {
+      Node *right = stack.top(); stack.pop();
+      Node *center = stack.top(); stack.pop();
+      Node *left = stack.top(); stack.pop();  
+      TernaryNode *tn = (TernaryNode*)n;
+      tn->setLeft(left);
+      tn->setCenter(center);
+      tn->setRight(right);
     }
 
     stack.push(n);

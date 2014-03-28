@@ -48,9 +48,9 @@ void ExternalRenderer::outputToImage(string name) {
   cout << "saving img to " << filename << endl;
 
   glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
-  int bytes = image_width*image_height*3; //Color space is RGB
+  int bytes = image_width*image_height*4; //Color space is RGBA
   GLubyte *buffer = (GLubyte *)malloc(bytes);
-  glReadPixels(0, 0, image_width, image_height, GL_RGB, GL_UNSIGNED_BYTE, buffer);
+  glReadPixels(0, 0, image_width, image_height, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
 
   saveToPNG(filename, buffer);
   free(buffer);
@@ -69,8 +69,10 @@ bool saveToPNG(string filename, GLubyte *buffer) {
     return false;
   }
   
-  int rowStride = (image_width * 3 + 3) & ~0x3;
-  
+  //  int rowStride = (image_width * 3 + 3) & ~0x3;
+  //  int rowStride = (image_width * 4 + 3) & ~0x3;
+  int rowStride = (image_width * 4 + 4) & ~0x7;
+
   png_bytep* row_pointers = new png_bytep[image_height];
   for (int i = 0; i < image_height; i++)
     row_pointers[i] = (png_bytep) &buffer[rowStride * (image_height - i - 1)];
@@ -101,7 +103,7 @@ bool saveToPNG(string filename, GLubyte *buffer) {
   png_set_IHDR(png_ptr, info_ptr,
                image_width, image_height,
                8,
-               PNG_COLOR_TYPE_RGB,
+               PNG_COLOR_TYPE_RGBA,
                PNG_INTERLACE_NONE,
                PNG_COMPRESSION_TYPE_DEFAULT,
                PNG_FILTER_TYPE_DEFAULT);
