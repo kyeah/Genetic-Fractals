@@ -117,7 +117,7 @@ void TernaryNode::printTree() {
 
 void TernaryNode::printTreeRPN() {
   left->printTreeRPN();
-  center->printTreeRPN():
+  center->printTreeRPN();
   right->printTreeRPN();
   cout << value << " ";
 }
