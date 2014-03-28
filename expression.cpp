@@ -40,37 +40,7 @@ Node* createNode(string _val) {
   }
 }
 
-double UnaryNode::evaluate(int n, int nc, vector<string> *v, vector<string> *c, vector<double> *vals, vector<double> *cvals) {
-  numVars = n;
-  numConsts = nc;
-  vars = v;
-  consts = c;
-  values = vals;
-  constVals = cvals;
-  return evalTree();
-}
-
-double BinaryNode::evaluate(int n, int nc, vector<string> *v, vector<string> *c, vector<double> *vals, vector<double> *cvals) {
-  numVars = n;
-  numConsts = nc;
-  vars = v;
-  consts = c;
-  values = vals;
-  constVals = cvals;
-  return evalTree();
-}
-
-/*double TernaryNode::evaluate(int n, int nc, vector<string> *v, vector<string> *c, vector<double> *vals, vector<double> *cvals) {
-  numVars = n;
-  numConsts = nc;
-  vars = v;
-  consts = c;
-  values = vals;
-  constVals = cvals;
-  return evalTree();
-  }*/
-
-double VarNode::evaluate(int n, int nc, vector<string> *v, vector<string> *c, vector<double> *vals, vector<double> *cvals) {
+double Node::evaluate(int n, int nc, vector<string> *v, vector<string> *c, vector<double> *vals, vector<double> *cvals) {
   numVars = n;
   numConsts = nc;
   vars = v;
@@ -184,30 +154,16 @@ void Expression::printConstants() {
 }
 
 void Expression::print() {
-  printTree(root);
+  if (root)
+    root->printTree();
   cout << endl;
   printConstants();
 }
 void Expression::printRPN() {
-  printTreeRPN(root);
+  if (root)
+    root->printTreeRPN();
   cout << endl;
   printConstants();
-}
-
-void Expression::printTree(Node *n) {
-  if (!n) return;
-
-  //  printTree(n->getLeft());
-  //  cout << n->getValue() << " ";
-  //  printTree(n->getRight());
-}
-
-void Expression::printTreeRPN(Node *n) {
-  if (!n) return;
-
-  //  printTreeRPN(n->getLeft());
-  //  printTreeRPN(n->getRight());
-  cout << n->getValue() << " ";
 }
 
 void Expression::setString(string s) {

@@ -3,6 +3,7 @@
 
 #include <unordered_set>
 #include <cmath>
+#include <iostream>
 #include <string>
 #include <vector>
 #include <stdlib.h>
@@ -46,8 +47,10 @@ class Node {
   bool isUnaryOp() { return type == TYPE_UNARY; }
   bool isBinaryOp() { return type == TYPE_BINARY; }
   bool isTernaryOp() { return type == TYPE_TERNARY; }
-  virtual double evaluate(int n, int nc, vector<string> *vars, vector<string> *consts, vector<double> *values, vector<double> *constVals) = 0;
+  double evaluate(int n, int nc, vector<string> *vars, vector<string> *consts, vector<double> *values, vector<double> *constVals);
   virtual double evalTree() = 0;
+  virtual void printTree() = 0;
+  virtual void printTreeRPN() = 0;
 };
 
 class UnaryNode : public Node {
@@ -77,7 +80,16 @@ class UnaryNode : public Node {
     else return 0.0;
   }
 
-  virtual double evaluate(int n, int nc, vector<string> *v, vector<string> *c, vector<double> *vals, vector<double> *cvals);
+  void printTree() {
+    std::cout << value << "(";
+    center->printTree();
+    std::cout << ") ";
+  }
+
+  void printTreeRPN() {
+    center->printTreeRPN();
+    std::cout << value << " ";
+  }
 };
 
 class BinaryNode : public Node {
@@ -112,10 +124,22 @@ class BinaryNode : public Node {
     else if (value == "/") return left->evalTree() / right->evalTree();
     else if (value == "*") return left->evalTree() * right->evalTree();
     else if (value == "^") return pow(left->evalTree(), right->evalTree());
-    else return 0.0;
+    else {
+      return 0.0;
+    }
   }
 
-  virtual double evaluate(int n, int nc, vector<string> *v, vector<string> *c, vector<double> *vals, vector<double> *cvals);
+  void printTree() {
+    left->printTree();
+    cout << value << " ";
+    right->printTree();
+  }
+
+  void printTreeRPN() {
+    left->printTreeRPN();
+    right->printTreeRPN();
+    cout << value << " ";
+  }
 };
 
 class VarNode : public Node {
@@ -133,10 +157,17 @@ class VarNode : public Node {
       if (value == (*consts)[i])
         return (*constVals)[i];
     }
+
     return 0.0;
   }
 
-  virtual double evaluate(int n, int nc, vector<string> *v, vector<string> *c, vector<double> *vals, vector<double> *cvals);
+  void printTree() {
+    cout << value << " ";
+  }
+
+  void printTreeRPN() {
+    cout << value << " ";
+  }
 };
 
 class NumNode : public Node {
@@ -161,8 +192,12 @@ class NumNode : public Node {
     return constval;
   }
 
-  virtual double evaluate(int n, int nc, vector<string> *v, vector<string> *c, vector<double> *vals, vector<double> *cvals) {
-    return evalTree();
+  void printTree() {
+    std::cout << value << " ";
+  }
+
+  void printTreeRPN() {
+    std::cout << value << " ";
   }
 };
 
@@ -181,8 +216,6 @@ class Expression {
 
   void print();
   void printRPN();
-  void printTree(Node *n);
-  void printTreeRPN(Node *n);
   void printConstants();
   void printInfixString();
 
