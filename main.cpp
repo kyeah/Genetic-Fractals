@@ -173,8 +173,8 @@ int main(int argc, char** argv){
 
   } else {
     // No fractal definitions provided; draw an example fractal.
-    //mainFractal = new CliffordAttractor("test", "sin(-1.4 * y) + cos(-1.4 * x)", "sin(1.6 * x) + 0.7 * cos(1.6 * y)", "x", "x", "y", "z");
-    mainFractal = new CliffordAttractor("test", "sin( a * y ) + c * cos(a * x)", "sin(b * x) + d * cos(b * y)", "x", "x", "y", "z");
+    // mainFractal = new CliffordAttractor("test", "sin(-1.4 * y) + cos(-1.4 * x)", "sin(1.6 * x) + 0.7 * cos(1.6 * y)", "x", "x", "y", "z");
+     mainFractal = new CliffordAttractor("test", "sin( a * y ) + c * cos(a * x)", "sin(b * x) + d * cos(b * y)", "x", "x", "y", "z");
     
     startDisplay();
   }
