@@ -49,6 +49,7 @@ double Node::evaluate(int n, int nc, vector<string> *v, vector<string> *c, vecto
   consts = c;
   values = vals;
   constVals = cvals;
+
   return evalTree();
 }
 

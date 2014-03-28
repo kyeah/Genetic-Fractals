@@ -143,7 +143,7 @@ void Repaint() {
         TwDraw();
       } else {
         ExternalRenderer::outputToImage(mainFractal->getName());
-        mainFractal->saveToFile(mainFractal->getName());
+        // mainFractal->saveToFile(mainFractal->getName());
         exit(0);
       }
     } else {
