@@ -164,7 +164,7 @@ int main(int argc, char** argv){
         pthread_join(mainFractal->getCalcThread(), NULL);
         Repaint();
         ExternalRenderer::outputToImage(mainFractal->getName());
-        mainFractal->saveToFile(mainFractal->getName());
+        //mainFractal->saveToFile(mainFractal->getName());
 
       } else {
         startDisplay();
