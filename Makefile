@@ -12,9 +12,9 @@ LIBS = -pthread -lpng -lglut -lGLU -lm -lX11 -lGLEW -lGL -lAntTweakBar #-lglfw3 
 UNAME := $(shell uname)
 ifeq ($(UNAME), Darwin)
 CC = g++
-CFLAGS = -D__MAC__ -std=c++11 -stdlib=libc++
+CFLAGS = -D__MAC__ -std=c++11 -stdlib=libc++ 
 INCLUDE = 
-LIBDIR = -L/usr/X11/lib
+LIBDIR = -L/usr/X11/lib -Llibs/AntTweakBar/lib -Wl,-rpath=libs/AntTweakBar/lib 
 LIBS = -framework OpenGL -framework GLUT -lX11
 endif
 
@@ -50,9 +50,6 @@ fbo.o: fbo.cpp fbo.h common.h
 
 color.o: color.cpp common.h
 	${CC} -c ${CFLAGS} $(INCLUDE) color.cpp
-
-dirty_link:
-	export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$PWD/libs/AntTweakBar/lib
 
 clean:
 	rm -f aesthetics *.o *~ *# *.gch
