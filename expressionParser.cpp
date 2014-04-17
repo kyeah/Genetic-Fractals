@@ -23,8 +23,12 @@ int Modulo(int num, int div)
 unsigned int OpArgCount( const std::string& s )
 {
     unsigned int val = 1;
-    
-    if ( s == "*" || s == "/" || s == "%" || 
+
+    if ( s == "if")
+    {
+        val = 3;
+    }
+    else if ( s == "*" || s == "/" || s == "%" ||
          s == "+" || s == "-" || s == "=" || 
          s == "^" || s == "POW" )
     {
@@ -65,6 +69,10 @@ int OpPrecedence(const std::string& s)
     {
         precedence = 1;        
     }
+    else if ( s == "if")
+    {
+        precedence = 0;
+    }
     
     return precedence;
 }
@@ -80,7 +88,7 @@ bool OpLeftAssoc( const std::string& s )
         opLeftAssoc = true;
     }
     // right to left
-    else if ( s == "=" || s == "!" )
+    else if ( s == "=" || s == "!" || s == "if")
     {
         opLeftAssoc = false;
     }
@@ -156,6 +164,7 @@ bool IsFunction( std::string s )
          str.find( "LOG" ) != std::string::npos ||
          str.find( "EXP" ) != std::string::npos ||
          str.find( "POW" ) != std::string::npos ||
+         str.find( "IF" )  != std::string::npos ||
          str.find( "SQRT" ) != std::string::npos )
     {
         isFunction = true;
@@ -357,7 +366,14 @@ bool Execute( const std::vector<std::string>& rpn, std::string& result )
                 else if ( capToken.find( "SQRT" ) != std::string::npos )
                 {                  
                     result = sqrt( d0 );                    
-                }      
+                }
+                else if ( capToken.find( "IF" ) != std::string::npos )
+                {
+                    double d3 = args[ 0 ];
+                    double d2 = args[ 1 ];
+                    double d1 = args[ 2 ];
+                    //TODO Add the evaluation
+                }
                 
                 result *= mult;
             }                       
