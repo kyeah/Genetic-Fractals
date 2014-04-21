@@ -44,7 +44,7 @@ extern Color kBlack;
 extern Color kWhite;
 extern Color clearColor;
 
-extern bool rendering;
+extern bool rendering, grayscale, alpha_save;
 extern atomic_bool waiting;
 extern int window_width, window_height;
 extern int PRECISION_POINTS;

@@ -92,16 +92,20 @@ bool AttractorFractal::paint() {
     return false;
   } else {
     glEnableClientState(GL_VERTEX_ARRAY);
-    glEnableClientState(GL_COLOR_ARRAY);
-    
     glVertexPointer(3, GL_FLOAT, sizeof(Vec3f), points.data());
-    glColorPointer(4, GL_FLOAT, sizeof(Vec4f), colors.data());
-    
-    glDrawArrays(GL_POINTS, 0, getNumPoints());
-    
+
+    if (grayscale) {
+      glColor3f(1,1,1);
+      glDrawArrays(GL_POINTS, 0, getNumPoints());
+    } else {
+      glEnableClientState(GL_COLOR_ARRAY);
+      glColorPointer(4, GL_FLOAT, sizeof(Vec4f), colors.data());
+      glDrawArrays(GL_POINTS, 0, getNumPoints());
+      glDisableClientState(GL_COLOR_ARRAY);
+    }
+
     // deactivate vertex arrays after drawing
     glDisableClientState(GL_VERTEX_ARRAY);
-    glDisableClientState(GL_COLOR_ARRAY);
     return true;
   }
 }

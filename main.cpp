@@ -164,6 +164,14 @@ int main(int argc, char** argv){
         pthread_join(mainFractal->getCalcThread(), NULL);
         Repaint();
         ExternalRenderer::outputToImage(mainFractal->getName());
+        grayscale = true;
+        alpha_save = false;
+        resize(640, 360);
+        std::stringstream ss;
+        ss << mainFractal->getName() << "_filter";
+        std::cout << "TESTING" << std::endl;
+        Repaint();
+        ExternalRenderer::outputToImage(ss.str());
         //mainFractal->saveToFile(mainFractal->getName());
 
       } else {
