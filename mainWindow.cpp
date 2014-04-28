@@ -27,6 +27,7 @@ Queue<CliffordAttractor> fractals;
 CliffordAttractor *mainFractal;
 
 Color clearColor = kBlack;
+bool grayscale = false;
 
 int createMainWindow(string _name, bool saving) {
 
@@ -142,9 +143,7 @@ void Repaint() {
       if (rendering) {
         TwDraw();
       } else {
-        ExternalRenderer::outputToImage(mainFractal->getName());
-        // mainFractal->saveToFile(mainFractal->getName());
-        exit(0);
+        return;
       }
     } else {
       waiting = true;

@@ -165,10 +165,13 @@ int main(int argc, char** argv){
         Repaint();
         ExternalRenderer::outputToImage(mainFractal->getName());
 
-        // Switch to non-alpha save
-        // Repaint with color = white
-        // outputToImage
-
+        grayscale = true;
+        alpha_save = false;
+        resize(640, 360);
+        std::stringstream ss;
+        ss << mainFractal->getName() << "_filter";
+        Repaint();
+        ExternalRenderer::outputToImage(ss.str());
         //mainFractal->saveToFile(mainFractal->getName());
 
       } else {
