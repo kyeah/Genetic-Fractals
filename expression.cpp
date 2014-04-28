@@ -13,17 +13,10 @@
 using namespace std;
 
 const unordered_set<string> Node::unary_ops = {"sin", "cos", "tan", "abs", "!"};
-const unordered_set<string> Node::binary_ops = {"+", "-", "*", "/", "^", "%"};
+const unordered_set<string> Node::binary_ops = {"+", "-", "*", "/", "^", "%", 
+                                                ">", "<", ">=", "<=", "==", "&&", "||"};
 const unordered_set<string> Node::ternary_ops = {"if"};
 
-/*
-vector<string> * Node::vars;
-vector<string> * Node::consts;
-vector<double> * Node::values;
-vector<double> * Node::constVals;
-int Node::numVars;
-int Node::numConsts;
-*/
 /////////////////////////////////////////////////////////////////////////////////////
 
 Node* createNode(string _val) {
@@ -44,13 +37,6 @@ Node* createNode(string _val) {
 }
 
 double Node::evaluate(int n, int nc, vector<string> *v, vector<string> *c, vector<double> *vals, vector<double> *cvals) {
-  /*  numVars = n;
-  numConsts = nc;
-  vars = v;
-  consts = c;
-  values = vals;
-  constVals = cvals;
-  */
   return evalTree(n, nc, v, c, vals, cvals);
 }
 
@@ -85,6 +71,13 @@ double BinaryNode::evalTree(int numVars, int numConsts, vector<string> *vars, ve
   else if (value == "/") return left->evalTree(numVars,numConsts,vars,consts,values,constVals) / right->evalTree(numVars,numConsts,vars,consts,values,constVals);
   else if (value == "^") return pow(left->evalTree(numVars,numConsts,vars,consts,values,constVals), right->evalTree(numVars,numConsts,vars,consts,values,constVals));
   else if (value == "%") return fmod(left->evalTree(numVars,numConsts,vars,consts,values,constVals), right->evalTree(numVars,numConsts,vars,consts,values,constVals));
+  else if (value == ">") return left->evalTree(numVars,numConsts,vars,consts,values,constVals) > right->evalTree(numVars,numConsts,vars,consts,values,constVals);
+  else if (value == ">=") return left->evalTree(numVars,numConsts,vars,consts,values,constVals) >= right->evalTree(numVars,numConsts,vars,consts,values,constVals);
+  else if (value == "<") return left->evalTree(numVars,numConsts,vars,consts,values,constVals) < right->evalTree(numVars,numConsts,vars,consts,values,constVals);
+  else if (value == "<=") return left->evalTree(numVars,numConsts,vars,consts,values,constVals) <= right->evalTree(numVars,numConsts,vars,consts,values,constVals);
+  else if (value == "==") return left->evalTree(numVars,numConsts,vars,consts,values,constVals) == right->evalTree(numVars,numConsts,vars,consts,values,constVals);
+  else if (value == "&&") return left->evalTree(numVars,numConsts,vars,consts,values,constVals) && right->evalTree(numVars,numConsts,vars,consts,values,constVals);
+  else if (value == "||") return left->evalTree(numVars,numConsts,vars,consts,values,constVals) || right->evalTree(numVars,numConsts,vars,consts,values,constVals);
   else return 0.0;
 }
 
@@ -185,6 +178,7 @@ Expression::Expression(string infixExpression, vector<string> consts, vector<str
 
   // Represent expression with a parse tree
   infixStringToRPN(infixExpression, &rpnTokens);
+  
   createTree(rpnTokens);
 }
 

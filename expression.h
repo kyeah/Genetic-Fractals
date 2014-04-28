@@ -37,14 +37,6 @@ class Node {
   static const unordered_set<string> binary_ops;
   static const unordered_set<string> ternary_ops;
 
-  // Set when calling evaluate to prevent recursive passing
-  /*  static vector<string> *vars;
-  static vector<string> *consts;
-  static vector<double> *values;
-  static vector<double> *constVals;
-  static int numVars;
-  static int numConsts;*/
-
  public:
   Node() {}
  Node(string _val): value(_val) {}

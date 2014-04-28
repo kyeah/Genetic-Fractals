@@ -164,6 +164,11 @@ int main(int argc, char** argv){
         pthread_join(mainFractal->getCalcThread(), NULL);
         Repaint();
         ExternalRenderer::outputToImage(mainFractal->getName());
+
+        // Switch to non-alpha save
+        // Repaint with color = white
+        // outputToImage
+
         //mainFractal->saveToFile(mainFractal->getName());
 
       } else {
