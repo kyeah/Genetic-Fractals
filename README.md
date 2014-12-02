@@ -3,7 +3,9 @@ Genetic Fractals
 
 A research tool studying the generation and evolution of aesthetically-pleasing fractals. It uses crowd-sourced testing along with observational patterns in the mathematical structure of attractor fractals to find optimal constants and equations.
 
-This program is meant to be used in conjunction with Tyler Yates' [Java Evolution GUI](https://github.com/Tyler-Yates/AestheticFractals).
+This program is meant to be used in conjunction with Tyler Yates' [Java Evolutionary GUI](https://github.com/Tyler-Yates/AestheticFractals).
+
+![Genetic Fractals](http://giant.gfycat.com/RadiantDeliciousDuckbillcat.gif)
 
 ### Dependencies
 
@@ -11,11 +13,12 @@ This program is meant to be used in conjunction with Tyler Yates' [Java Evolutio
 
 ### Building
 
-        Run './configure' to build AntTweakBar and link it as a shared library.
-        If you do not have sudo access and are running Ubuntu:
-        1. Manually run 'make' in libs/AntTweakBar/src/
-        2. run 'make dirty_link' in the application folder to add the folder to your LD_LIBRARY_PATH
         run 'make' in root folder
+
+If you have issues linking the AntTweakBar library on compilation, follow these steps:
+
+        1. Manually run 'make' in libs/AntTweakBar/src/
+        2. Add the libs/AntTweakBar/lib folder to your LD_LIBRARY_PATH
 
 
 Usage
