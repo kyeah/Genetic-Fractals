@@ -9,6 +9,7 @@
 #ifdef __MAC__
 #include <OpenGL/gl.h>
 #include <GLUT/glut.h>
+#include <OpenGL/glext.h>
 #else
 #include <GL/glew.h>
 #include <GL/gl.h>

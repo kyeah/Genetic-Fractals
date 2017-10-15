@@ -34,7 +34,9 @@ void ExternalRenderer::getNewRenderBuffer(GLuint *buffer) {
   status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
   if (status != GL_FRAMEBUFFER_COMPLETE) {
     fprintf(stderr, "Error while attaching new render buffer:\n");
+    #ifndef __MAC__
     printFrameBufferError();
+    #endif
     exit(0);
   }
 }
@@ -119,6 +121,7 @@ bool saveToPNG(string filename, GLubyte *buffer) {
   fclose(out);
 }
 
+#ifndef __APPLE__
 void printFrameBufferError() {
   switch(status) {
   case GL_FRAMEBUFFER_COMPLETE:
@@ -138,31 +141,32 @@ void printFrameBufferError() {
     break;
 
   case GL_FRAMEBUFFER_INCOMPLETE_FORMATS_EXT:
-cout << "The formats of the currently used frame buffer object are not supported or do not fit together!" << endl;
+    cout << "The formats of the currently used frame buffer object are not supported or do not fit together!" << endl;
     break;
 
   case GL_FRAMEBUFFER_INCOMPLETE_DRAW_BUFFER:
-cout << "A Draw buffer is incomplete or undefinied. All draw buffers must specify attachment points that have images attached." << endl;
+    cout << "A Draw buffer is incomplete or undefinied. All draw buffers must specify attachment points that have images attached." << endl;
     break;
 
   case GL_FRAMEBUFFER_INCOMPLETE_READ_BUFFER:
-cout << "A Read buffer is incomplete or undefinied. All read buffers must specify attachment points that have images attached." << endl;
+    cout << "A Read buffer is incomplete or undefinied. All read buffers must specify attachment points that have images attached." << endl;
     break;
 
   case GL_FRAMEBUFFER_INCOMPLETE_MULTISAMPLE:
-cout << "All images must have the same number of multisample samples." << endl;
+    cout << "All images must have the same number of multisample samples." << endl;
     break;
 
   case GL_FRAMEBUFFER_INCOMPLETE_LAYER_TARGETS :
-cout << "If a layered image is attached to one attachment, then all attachments must be layered attachments. The attached layers do not have to have the same number of layers, nor do the layers have to come from the same kind of texture." << endl;;
+    cout << "If a layered image is attached to one attachment, then all attachments must be layered attachments. The attached layers do not have to have the same number of layers, nor do the layers have to come from the same kind of texture." << endl;;
     break;
 
   case GL_FRAMEBUFFER_UNSUPPORTED:
-cout << "Attempt to use an unsupported format combinaton!" << endl;
-break;
+    cout << "Attempt to use an unsupported format combinaton!" << endl;
+    break;
 
  default:
-cout << "Unknown error while attempting to create frame buffer object!" << endl;
+   cout << "Unknown error while attempting to create frame buffer object!" << endl;
     break;
   }
 }
+#endif

@@ -13,9 +13,9 @@ UNAME := $(shell uname)
 ifeq ($(UNAME), Darwin)
 CC = g++
 CFLAGS = -D__MAC__ -std=c++11 -stdlib=libc++ 
-INCLUDE = 
-LIBDIR = -L/usr/X11/lib -Llibs/AntTweakBar/lib -Wl,-rpath=libs/AntTweakBar/lib 
-LIBS = -framework OpenGL -framework GLUT -lX11
+INCLUDE = -Ilibs/AntTweakBar/include
+LIBDIR = -lpng -lAntTweakBar
+LIBS = -framework OpenGL -framework GLUT
 endif
 
 ###########################################################
