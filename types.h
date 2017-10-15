@@ -1,5 +1,5 @@
-#ifndef __CS354_TYPES_H__
-#define __CS354__TYPES_H_
+#ifndef __UNSIGNED_TYPES_H__
+#define __UNSIGNED_TYPES_H_
 typedef unsigned short int ushort;
 typedef unsigned long int ulong;
 typedef unsigned int uint; 
