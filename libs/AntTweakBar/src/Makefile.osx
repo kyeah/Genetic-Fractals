@@ -4,9 +4,9 @@ SO_EXT		= .dylib
 AR_EXT		= .a
 
 #---- Release
-CXXCFG   	= -O3
-LFLAGS		= 
-OUT_DIR		= ../lib
+CXXCFG   	= -O3 -arch x86_64
+LFLAGS		=  -arch x86_64 -D__MAC__ -std=c++11 -stdlib=libc++
+OUT_DIR		= /usr/local/lib
 #---- Debug
 #CXXCFG   	= -g -D_DEBUG
 #LFLAGS		= 
