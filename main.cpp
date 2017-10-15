@@ -97,11 +97,13 @@ int main(int argc, char** argv){
   createMainWindow("Aesthetic Fractals", savingImage);
 
   // Enable GLEW library for External rendering
+  #ifndef __APPLE__
   GLenum err = glewInit();
   if (GLEW_OK != err) {
     fprintf(stderr, "Error: %s\n", glewGetErrorString(err));
     exit(0);
   }
+  #endif
 
   if (runInBackground) {
     //    string cmd;

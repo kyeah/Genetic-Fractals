@@ -11,14 +11,22 @@ This program is meant to be used in conjunction with Tyler Yates' [Java Evolutio
 
         sudo apt-get install libglu1-mesa-dev freeglut3-dev mesa-common-dev libglew-dev libpng-dev
 
+// for mac: x11 stuff, brew install glew
+
 ### Building
 
         run 'make' in root folder
 
 If you have issues linking the AntTweakBar library on compilation, follow these steps:
 
+For Linux:
+
         1. Manually run 'make' in libs/AntTweakBar/src/
         2. Add the libs/AntTweakBar/lib folder to your LD_LIBRARY_PATH
+
+For OSX:
+
+        1. Manually run `make -f Makefile.osx` in libs/AntTweakBar/src/
 
 
 Usage

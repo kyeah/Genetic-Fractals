@@ -34,7 +34,7 @@ void ExternalRenderer::getNewRenderBuffer(GLuint *buffer) {
   status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
   if (status != GL_FRAMEBUFFER_COMPLETE) {
     fprintf(stderr, "Error while attaching new render buffer:\n");
-    printFrameBufferError();
+    //printFrameBufferError();
     exit(0);
   }
 }
@@ -119,50 +119,50 @@ bool saveToPNG(string filename, GLubyte *buffer) {
   fclose(out);
 }
 
-void printFrameBufferError() {
-  switch(status) {
-  case GL_FRAMEBUFFER_COMPLETE:
-    return;
-    break;
+// void printFrameBufferError() {
+//   switch(status) {
+//   case GL_FRAMEBUFFER_COMPLETE:
+//     return;
+//     break;
 
-  case GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT:
-    cout << "An attachment could not be bound to frame buffer object!" << endl;
-    break;
+//   case GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT:
+//     cout << "An attachment could not be bound to frame buffer object!" << endl;
+//     break;
 
-  case GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT:
-    cout << "Attachments are missing! At least one image (texture) must be bound to the frame buffer object!" << endl;
-    break;
+//   case GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT:
+//     cout << "Attachments are missing! At least one image (texture) must be bound to the frame buffer object!" << endl;
+//     break;
 
-  case GL_FRAMEBUFFER_INCOMPLETE_DIMENSIONS_EXT:
-    cout << "The dimensions of the buffers attached to the currently used frame buffer object do not match!" << endl;
-    break;
+//   case GL_FRAMEBUFFER_INCOMPLETE_DIMENSIONS_EXT:
+//     cout << "The dimensions of the buffers attached to the currently used frame buffer object do not match!" << endl;
+//     break;
 
-  case GL_FRAMEBUFFER_INCOMPLETE_FORMATS_EXT:
-cout << "The formats of the currently used frame buffer object are not supported or do not fit together!" << endl;
-    break;
+//   case GL_FRAMEBUFFER_INCOMPLETE_FORMATS_EXT:
+// cout << "The formats of the currently used frame buffer object are not supported or do not fit together!" << endl;
+//     break;
 
-  case GL_FRAMEBUFFER_INCOMPLETE_DRAW_BUFFER:
-cout << "A Draw buffer is incomplete or undefinied. All draw buffers must specify attachment points that have images attached." << endl;
-    break;
+//   case GL_FRAMEBUFFER_INCOMPLETE_DRAW_BUFFER:
+// cout << "A Draw buffer is incomplete or undefinied. All draw buffers must specify attachment points that have images attached." << endl;
+//     break;
 
-  case GL_FRAMEBUFFER_INCOMPLETE_READ_BUFFER:
-cout << "A Read buffer is incomplete or undefinied. All read buffers must specify attachment points that have images attached." << endl;
-    break;
+//   case GL_FRAMEBUFFER_INCOMPLETE_READ_BUFFER:
+// cout << "A Read buffer is incomplete or undefinied. All read buffers must specify attachment points that have images attached." << endl;
+//     break;
 
-  case GL_FRAMEBUFFER_INCOMPLETE_MULTISAMPLE:
-cout << "All images must have the same number of multisample samples." << endl;
-    break;
+//   case GL_FRAMEBUFFER_INCOMPLETE_MULTISAMPLE:
+// cout << "All images must have the same number of multisample samples." << endl;
+//     break;
 
-  case GL_FRAMEBUFFER_INCOMPLETE_LAYER_TARGETS :
-cout << "If a layered image is attached to one attachment, then all attachments must be layered attachments. The attached layers do not have to have the same number of layers, nor do the layers have to come from the same kind of texture." << endl;;
-    break;
+//   case GL_FRAMEBUFFER_INCOMPLETE_LAYER_TARGETS :
+// cout << "If a layered image is attached to one attachment, then all attachments must be layered attachments. The attached layers do not have to have the same number of layers, nor do the layers have to come from the same kind of texture." << endl;;
+//     break;
 
-  case GL_FRAMEBUFFER_UNSUPPORTED:
-cout << "Attempt to use an unsupported format combinaton!" << endl;
-break;
+//   case GL_FRAMEBUFFER_UNSUPPORTED:
+// cout << "Attempt to use an unsupported format combinaton!" << endl;
+// break;
 
- default:
-cout << "Unknown error while attempting to create frame buffer object!" << endl;
-    break;
-  }
-}
+//  default:
+// cout << "Unknown error while attempting to create frame buffer object!" << endl;
+//     break;
+//   }
+// }
