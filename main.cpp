@@ -154,6 +154,11 @@ int main(int argc, char** argv){
         imgName = argv[i++];
       }
 
+      if (i + 6 > argc) {
+        fprintf( stderr, "Not enough parameters" );
+        exit(0);
+      }
+
       // Calculate points
       CliffordAttractor ca(imgName, argv[i], argv[i+1], argv[i+2], argv[i+3], argv[i+4], argv[i+5]);
       mainFractal = new CliffordAttractor(imgName, argv[i], argv[i+1], argv[i+2], argv[i+3], argv[i+4], argv[i+5]);
