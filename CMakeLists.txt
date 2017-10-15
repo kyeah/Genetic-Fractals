@@ -26,4 +26,5 @@ set(SOURCE_FILES
         types.h
         vec.h)
 
+add_executable(Genetic_Fractals_Source_Inspect ${SOURCE_FILES})
 add_custom_target(Genetic_Fractals ALL COMMAND make WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
