@@ -9,9 +9,15 @@ This program is meant to be used in conjunction with Tyler Yates' [Java Evolutio
 
 ### Dependencies
 
+#### Linux
+
         sudo apt-get install libglu1-mesa-dev freeglut3-dev mesa-common-dev libglew-dev libpng-dev
 
-// for mac: x11 stuff, brew install glew
+#### OSX
+
+        brew install freeglut3 glew libpng
+
+You'll also need to install XQuartz if you're on a newer OSX version to pull in the X11 dependency.
 
 ### Building
 
@@ -27,7 +33,6 @@ For Linux:
 For OSX:
 
         1. Manually run `make -f Makefile.osx` in libs/AntTweakBar/src/
-
 
 Usage
 ============
