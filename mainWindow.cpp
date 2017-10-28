@@ -140,7 +140,7 @@ void Repaint() {
     }
 
     adjustBounds(*mainFractal);
-    if (mainFractal->paint()) {
+    if (mainFractal->paintSpline()) {
       if (rendering) {
         TwDraw();
       } else {
@@ -165,19 +165,19 @@ void Repaint() {
   static int num = 0;
   
   if (!waiting) {
-    std::ostringstream ss;
-    ss << "fiftyk/test" << std::setw( 7 ) << std::setfill( '0' ) << num++;
-    ExternalRenderer::outputToImage(ss.str());
+    //std::ostringstream ss;
+    //ss << "fiftyk/test" << std::setw( 7 ) << std::setfill( '0' ) << num++;
+    //ExternalRenderer::outputToImage(ss.str());
     //    }
     //} else if (fadeAlpha > 0) {
     //fadeAlpha -= fadeSpeed;
     //glutPostRedisplay();
     //}
     
-    if (num % 30 == 0) {
-      mainFractal->mutateConstants();
-      zoom = 1;
-    }
+    //if (num % 30 == 0) {
+    //  mainFractal->mutateConstants();
+    //  zoom = 1;
+    //}
   }
 }
 

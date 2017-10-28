@@ -12,7 +12,7 @@ float ALPHA = (preAlphaVal > 1 ? 1 : preAlphaVal);
 
 void setPrecisionPoints(int points) {
   PRECISION_POINTS = points;
-  preAlphaVal = 500 / (float)PRECISION_POINTS;
+  preAlphaVal = 1000 / (float)PRECISION_POINTS;
   ALPHA = (preAlphaVal > 1 ? 1 : preAlphaVal);
 }
 
@@ -62,7 +62,6 @@ void* AttractorFractal::calculateAsync(void* args) {
 
     Vec3f p = {(float)x, (float)y, (float)z};
     Vec4f c = {(float)r, (float)g, (float)b, alpha};
-
     f->points.push_back(p);
     f->colors.push_back(c);
   }
@@ -106,6 +105,26 @@ bool AttractorFractal::paint() {
 
     // deactivate vertex arrays after drawing
     glDisableClientState(GL_VERTEX_ARRAY);
+    return true;
+  }
+}
+
+bool AttractorFractal::paintSpline() {
+  if (!isReady()) {
+    calculate();
+    return false;
+  } else {
+    glLineWidth(4.0);
+    for (int i = 0; i < getNumPoints() / 10; i++) {
+      glMap1f(GL_MAP1_VERTEX_3, 0.0, 1.0, 3, 10, (float*)&points[9*i]);
+      glMap1f(GL_MAP1_COLOR_4, 0.0, 1.0, 4, 2, (float*)&colors[9*i]);
+      glEnable(GL_MAP1_COLOR_4);
+      glEnable(GL_MAP1_VERTEX_3);
+  
+      glMapGrid1f(1000, 0.0, 1.0);
+      glEvalMesh1(GL_POINT, 0, 1000);
+    }
+
     return true;
   }
 }

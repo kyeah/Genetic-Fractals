@@ -77,6 +77,7 @@ class AttractorFractal {
   static void* calculateAsync(void*);
   void calculate();
   bool paint();
+  bool paintSpline();
   void clear();
   void saveToFile(string name);
   void printInfo();
