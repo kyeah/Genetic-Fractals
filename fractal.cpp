@@ -12,7 +12,7 @@ float ALPHA = (preAlphaVal > 1 ? 1 : preAlphaVal);
 
 void setPrecisionPoints(int points) {
   PRECISION_POINTS = points;
-  preAlphaVal = 3000 / (float)PRECISION_POINTS;
+  preAlphaVal = 10000 / (float)PRECISION_POINTS;
   ALPHA = (preAlphaVal > 1 ? 1 : preAlphaVal);
 }
 
@@ -117,35 +117,55 @@ bool AttractorFractal::paintSpline() {
     calculate();
     return false;
   } else {
-    int max = getNumPoints() / 3;
-    for (int i = start; i < start + 33; i++) {
-      glMap1f(GL_MAP1_VERTEX_3, 0.0, 1.0, 3, 3, (float*)&points[3*i]);
-      glMap1f(GL_MAP1_COLOR_4, 0.0, 1.0, 4, 3, (float*)&colors[3*i]);
-      glEnable(GL_MAP1_COLOR_4);
-      glEnable(GL_MAP1_VERTEX_3);
+    int max = getNumPoints() / 10;
+    glMap1f(GL_MAP1_VERTEX_3, 0.0, 1.0, 3, 10, (float*)&points[9*start]);
+    glMap1f(GL_MAP1_COLOR_4, 0.0, 1.0, 4, 10, (float*)&colors[9*start]);
+    glEnable(GL_MAP1_COLOR_4);
+    glEnable(GL_MAP1_VERTEX_3);
 
-      glHint(GL_LINE_SMOOTH_HINT,GL_NICEST);
-      glEnable(GL_LINE_SMOOTH);
-      glLineWidth((rand() % 5) + 2);
-      glBegin(GL_LINE_STRIP);
-       for (int uInt = 0; uInt <= 100; uInt++)
-         {                                   
-           GLfloat u = uInt/(GLfloat)100; 
-           glEvalCoord1f(u);                 
-         }                                   
-       glEnd();
+    glHint(GL_LINE_SMOOTH_HINT,GL_NICEST);
+    glEnable(GL_LINE_SMOOTH);
+
+    static int l1_width = (rand() % 5) + 2;
+    static int l2_width = (rand() % 5) + 2;
+    glLineWidth(l1_width);
+    glBegin(GL_LINE_STRIP);
+    for (int uInt = (delayer * (10/5.0)); uInt <= 100; uInt++)
+      {                                   
+        GLfloat u = uInt/(GLfloat)100; 
+        glEvalCoord1f(u);                 
+      }                                   
+    glEnd();
+
+    glMap1f(GL_MAP1_VERTEX_3, 0.0, 1.0, 3, 10, (float*)&points[9*(start+1)]);
+    glMap1f(GL_MAP1_COLOR_4, 0.0, 1.0, 4, 10, (float*)&colors[9*(start+1)]);
+    glEnable(GL_MAP1_COLOR_4);
+    glEnable(GL_MAP1_VERTEX_3);
+
+    glHint(GL_LINE_SMOOTH_HINT,GL_NICEST);
+    glEnable(GL_LINE_SMOOTH);
+    glLineWidth(l2_width);
+    glBegin(GL_LINE_STRIP);
+    for (int uInt = 0; uInt <= (delayer * (10/5.0)); uInt++)
+      {                                   
+        GLfloat u = uInt/(GLfloat)100; 
+        glEvalCoord1f(u);                 
+      }                                   
+    glEnd();
+
 
        //glMapGrid1f(1000, 0.0, 1.0);
       //glEvalMesh1(GL_POINT, 0, 1000);
-    }
 
     delayer++;
-    if (delayer > 0) {
+    if (delayer > 50) {
       delayer= 0;
-      start += 3;
-      if (start > max - 10) {
+      start += 1;
+      if (start > max - 100) {
         start = 0;
       }
+      l1_width = l2_width;
+      l2_width = (rand() % 5) + 2;
     }
 
     return true;

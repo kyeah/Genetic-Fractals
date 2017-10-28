@@ -194,10 +194,10 @@ void Idle() {
     //lastTime = currTime;
   //  angle+=5;
   if (!waiting) {
-    glLoadIdentity();
-    glRotatef(angle, 0, 1, 0);
-    glMultMatrixf(rot_matrix);
-    glGetFloatv(GL_MODELVIEW_MATRIX, rot_matrix);
+    // glLoadIdentity();
+    // glRotatef(angle, 0, 1, 0);
+    // glMultMatrixf(rot_matrix);
+    // glGetFloatv(GL_MODELVIEW_MATRIX, rot_matrix);
     //   }
   }
 
