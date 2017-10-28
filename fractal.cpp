@@ -110,11 +110,15 @@ bool AttractorFractal::paint() {
 }
 
 bool AttractorFractal::paintSpline() {
+  static int start = 0;
+  static int delayer = 0;
+
   if (!isReady()) {
     calculate();
     return false;
   } else {
-    for (int i = 0; i < getNumPoints() / 3; i++) {
+    int max = getNumPoints() / 3;
+    for (int i = start; i < start + 33; i++) {
       glMap1f(GL_MAP1_VERTEX_3, 0.0, 1.0, 3, 3, (float*)&points[3*i]);
       glMap1f(GL_MAP1_COLOR_4, 0.0, 1.0, 4, 3, (float*)&colors[3*i]);
       glEnable(GL_MAP1_COLOR_4);
@@ -122,17 +126,26 @@ bool AttractorFractal::paintSpline() {
 
       glHint(GL_LINE_SMOOTH_HINT,GL_NICEST);
       glEnable(GL_LINE_SMOOTH);
-      glLineWidth((rand() % 5) + 1);
+      glLineWidth((rand() % 5) + 2);
       glBegin(GL_LINE_STRIP);
-       for (int uInt = 0; uInt <= 1000; uInt++)
+       for (int uInt = 0; uInt <= 100; uInt++)
          {                                   
-           GLfloat u = uInt/(GLfloat)1000; 
+           GLfloat u = uInt/(GLfloat)100; 
            glEvalCoord1f(u);                 
          }                                   
        glEnd();
 
        //glMapGrid1f(1000, 0.0, 1.0);
       //glEvalMesh1(GL_POINT, 0, 1000);
+    }
+
+    delayer++;
+    if (delayer > 0) {
+      delayer= 0;
+      start += 3;
+      if (start > max - 10) {
+        start = 0;
+      }
     }
 
     return true;
