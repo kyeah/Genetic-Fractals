@@ -12,7 +12,7 @@ float ALPHA = (preAlphaVal > 1 ? 1 : preAlphaVal);
 
 void setPrecisionPoints(int points) {
   PRECISION_POINTS = points;
-  preAlphaVal = 1000 / (float)PRECISION_POINTS;
+  preAlphaVal = 3000 / (float)PRECISION_POINTS;
   ALPHA = (preAlphaVal > 1 ? 1 : preAlphaVal);
 }
 
@@ -114,15 +114,25 @@ bool AttractorFractal::paintSpline() {
     calculate();
     return false;
   } else {
-    glLineWidth(4.0);
-    for (int i = 0; i < getNumPoints() / 10; i++) {
-      glMap1f(GL_MAP1_VERTEX_3, 0.0, 1.0, 3, 10, (float*)&points[9*i]);
-      glMap1f(GL_MAP1_COLOR_4, 0.0, 1.0, 4, 2, (float*)&colors[9*i]);
+    for (int i = 0; i < getNumPoints() / 3; i++) {
+      glMap1f(GL_MAP1_VERTEX_3, 0.0, 1.0, 3, 3, (float*)&points[3*i]);
+      glMap1f(GL_MAP1_COLOR_4, 0.0, 1.0, 4, 3, (float*)&colors[3*i]);
       glEnable(GL_MAP1_COLOR_4);
       glEnable(GL_MAP1_VERTEX_3);
-  
-      glMapGrid1f(1000, 0.0, 1.0);
-      glEvalMesh1(GL_POINT, 0, 1000);
+
+      glHint(GL_LINE_SMOOTH_HINT,GL_NICEST);
+      glEnable(GL_LINE_SMOOTH);
+      glLineWidth((rand() % 5) + 1);
+      glBegin(GL_LINE_STRIP);
+       for (int uInt = 0; uInt <= 1000; uInt++)
+         {                                   
+           GLfloat u = uInt/(GLfloat)1000; 
+           glEvalCoord1f(u);                 
+         }                                   
+       glEnd();
+
+       //glMapGrid1f(1000, 0.0, 1.0);
+      //glEvalMesh1(GL_POINT, 0, 1000);
     }
 
     return true;
