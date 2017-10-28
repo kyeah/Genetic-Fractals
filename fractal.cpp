@@ -110,63 +110,77 @@ bool AttractorFractal::paint() {
 }
 
 bool AttractorFractal::paintSpline() {
-  static int start = 0;
-  static int delayer = 0;
+  static vector<int> starts;
+  static vector<int> widths;
+  static vector<int> delay_starts;
+  static int delay = 80;
+  static int order = 10;
+
+  if (starts.size() == 0) {
+    for (int i = 0; i < 3; i++) {
+      starts.push_back(rand() % (getNumPoints() / order));
+      delay_starts.push_back(rand() % delay);
+      widths.push_back((rand() % 5) + 2);
+      widths.push_back((rand() % 5) + 2);
+    }
+  }
 
   if (!isReady()) {
     calculate();
     return false;
   } else {
-    int max = getNumPoints() / 10;
-    glMap1f(GL_MAP1_VERTEX_3, 0.0, 1.0, 3, 10, (float*)&points[9*start]);
-    glMap1f(GL_MAP1_COLOR_4, 0.0, 1.0, 4, 10, (float*)&colors[9*start]);
-    glEnable(GL_MAP1_COLOR_4);
-    glEnable(GL_MAP1_VERTEX_3);
+    int max = getNumPoints() / order;
+    for (int s = 0; s < starts.size(); s++)  {
 
-    glHint(GL_LINE_SMOOTH_HINT,GL_NICEST);
-    glEnable(GL_LINE_SMOOTH);
+      glMap1f(GL_MAP1_VERTEX_3, 0.0, 1.0, 3, order, (float*)&points[(order-1)*starts[s]]);
+      glMap1f(GL_MAP1_COLOR_4, 0.0, 1.0, 4, order, (float*)&colors[(order-1)*starts[s]]);
+      glEnable(GL_MAP1_COLOR_4);
+      glEnable(GL_MAP1_VERTEX_3);
 
-    static int l1_width = (rand() % 5) + 2;
-    static int l2_width = (rand() % 5) + 2;
-    glLineWidth(l1_width);
-    glBegin(GL_LINE_STRIP);
-    for (int uInt = (delayer * (10/5.0)); uInt <= 100; uInt++)
-      {                                   
-        GLfloat u = uInt/(GLfloat)100; 
-        glEvalCoord1f(u);                 
-      }                                   
-    glEnd();
+      glHint(GL_LINE_SMOOTH_HINT,GL_NICEST);
+      glEnable(GL_LINE_SMOOTH);
 
-    glMap1f(GL_MAP1_VERTEX_3, 0.0, 1.0, 3, 10, (float*)&points[9*(start+1)]);
-    glMap1f(GL_MAP1_COLOR_4, 0.0, 1.0, 4, 10, (float*)&colors[9*(start+1)]);
-    glEnable(GL_MAP1_COLOR_4);
-    glEnable(GL_MAP1_VERTEX_3);
+      glLineWidth(widths[s * 2]);
+      glBegin(GL_LINE_STRIP);
+      for (int uInt = (delay_starts[s] * (100.0/delay)); uInt <= 100; uInt++)
+        {                                   
+          GLfloat u = uInt/(GLfloat)100; 
+          glEvalCoord1f(u);                 
+        }                                   
+      glEnd();
 
-    glHint(GL_LINE_SMOOTH_HINT,GL_NICEST);
-    glEnable(GL_LINE_SMOOTH);
-    glLineWidth(l2_width);
-    glBegin(GL_LINE_STRIP);
-    for (int uInt = 0; uInt <= (delayer * (10/5.0)); uInt++)
-      {                                   
-        GLfloat u = uInt/(GLfloat)100; 
-        glEvalCoord1f(u);                 
-      }                                   
-    glEnd();
+      glMap1f(GL_MAP1_VERTEX_3, 0.0, 1.0, 3, order, (float*)&points[(order-1)*(starts[s]+1)]);
+      glMap1f(GL_MAP1_COLOR_4, 0.0, 1.0, 4, order, (float*)&colors[(order-1)*(starts[s]+1)]);
+      glEnable(GL_MAP1_COLOR_4);
+      glEnable(GL_MAP1_VERTEX_3);
+      
+      glHint(GL_LINE_SMOOTH_HINT,GL_NICEST);
+      glEnable(GL_LINE_SMOOTH);
+      glLineWidth(widths[s * 2 + 1]);
+      glBegin(GL_LINE_STRIP);
+      
+      for (int uInt = 0; uInt <= (delay_starts[s] * (100.0/delay)); uInt++)
+        {                                   
+          GLfloat u = uInt/(GLfloat)100; 
+          glEvalCoord1f(u);                 
+        }                                   
+      glEnd();
 
+      delay_starts[s]++;
+      if (delay_starts[s] > delay) {
+      delay_starts[s] = 0;
+      starts[s] += 1;
+      if (starts[s] > max - 100) {
+        starts[s] = 0;
+      }
+      widths[2*s] = widths[2*s + 1];
+      widths[2*s+1] = (rand() % 5) + 2;
+      
+      }
+    }
 
        //glMapGrid1f(1000, 0.0, 1.0);
       //glEvalMesh1(GL_POINT, 0, 1000);
-
-    delayer++;
-    if (delayer > 50) {
-      delayer= 0;
-      start += 1;
-      if (start > max - 100) {
-        start = 0;
-      }
-      l1_width = l2_width;
-      l2_width = (rand() % 5) + 2;
-    }
 
     return true;
   }

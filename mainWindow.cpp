@@ -10,6 +10,7 @@ int windowID;
 
 float window_aspect;
 bool fullScreen=false;
+bool capturing = false;
 
 // GLUT Utility Variables
 float zoom = 1;
@@ -164,11 +165,11 @@ void Repaint() {
 
   static int num = 0;
   
-  if (!waiting) {
-    //std::ostringstream ss;
-    //ss << "fiftyk/test" << std::setw( 7 ) << std::setfill( '0' ) << num++;
-    //ExternalRenderer::outputToImage(ss.str());
-    //    }
+  if (!waiting && capturing) {
+    std::ostringstream ss;
+    ss << "capture/test" << std::setw( 7 ) << std::setfill( '0' ) << num++;
+    ExternalRenderer::outputToImage(ss.str());
+  }
     //} else if (fadeAlpha > 0) {
     //fadeAlpha -= fadeSpeed;
     //glutPostRedisplay();
@@ -178,11 +179,11 @@ void Repaint() {
     //  mainFractal->mutateConstants();
     //  zoom = 1;
     //}
-  }
 }
 
+
 void Idle() {
-  static float angle = 1.5;
+  static float angle = 0.3;
   static double framedelay = 600.0 / 60.0;
   static double lastTime = 0;
   static int num = 0;
@@ -194,11 +195,11 @@ void Idle() {
     //lastTime = currTime;
   //  angle+=5;
   if (!waiting) {
-    // glLoadIdentity();
-    // glRotatef(angle, 0, 1, 0);
-    // glMultMatrixf(rot_matrix);
-    // glGetFloatv(GL_MODELVIEW_MATRIX, rot_matrix);
-    //   }
+    glLoadIdentity();
+    glRotatef(angle, 0, 1, 0);
+    glMultMatrixf(rot_matrix);
+    glGetFloatv(GL_MODELVIEW_MATRIX, rot_matrix);
+    //}
   }
 
   // Modify and save rotation matrix
@@ -364,6 +365,9 @@ void Keyboard(unsigned char key, int x, int y){
         break;
       case 's':  // Save to test.png
         ExternalRenderer::outputToImage("test");
+        break;
+      case 'c':
+        capturing = !capturing;
         break;
       case 27 : // (ESC) close the program
         glutDestroyWindow(windowID);
