@@ -3,7 +3,8 @@
 #include "expression.h"
 #include "fractal.h"
 #include "fbo.h"
-
+#include <sstream>
+#include <iomanip>
 char* name;
 int windowID;
 
@@ -155,20 +156,62 @@ void Repaint() {
   }
 
   if (rendering && fadeAlpha > 0) {
-    drawLoader();
+    //drawLoader();
   }
 
   glFlush();
   glutSwapBuffers();
+
+  static int num = 0;
+  
+  if (!waiting) {
+    std::ostringstream ss;
+    ss << "fiftyk/test" << std::setw( 7 ) << std::setfill( '0' ) << num++;
+    ExternalRenderer::outputToImage(ss.str());
+    //    }
+    //} else if (fadeAlpha > 0) {
+    //fadeAlpha -= fadeSpeed;
+    //glutPostRedisplay();
+    //}
+    
+    if (num % 30 == 0) {
+      mainFractal->mutateConstants();
+      zoom = 1;
+    }
+  }
 }
 
 void Idle() {
-  if (waiting) {
-    glutPostRedisplay();
-  } else if (fadeAlpha > 0) {
-    fadeAlpha -= fadeSpeed;
-    glutPostRedisplay();
+  static float angle = 1.5;
+  static double framedelay = 600.0 / 60.0;
+  static double lastTime = 0;
+  static int num = 0;
+
+  //double currTime = glutGet(GLUT_ELAPSED_TIME);
+
+  //bool ok = currTime - lastTime >= framedelay;
+  //if (ok) {
+    //lastTime = currTime;
+  //  angle+=5;
+  if (!waiting) {
+    glLoadIdentity();
+    glRotatef(angle, 0, 1, 0);
+    glMultMatrixf(rot_matrix);
+    glGetFloatv(GL_MODELVIEW_MATRIX, rot_matrix);
+    //   }
   }
+
+  // Modify and save rotation matrix
+  //glLoadIdentity();
+  //glRotatef(angle,1,0,0);
+  //glRotatef(angle, 0, 1, 0);
+  //glMultMatrixf(rot_matrix);
+  //glGetFloatv(GL_MODELVIEW_MATRIX, rot_matrix);
+
+  //if (waiting) {
+  glutPostRedisplay();
+
+  //if (ok) {
 }
 
 //****************************************

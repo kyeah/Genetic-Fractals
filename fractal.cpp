@@ -12,7 +12,7 @@ float ALPHA = (preAlphaVal > 1 ? 1 : preAlphaVal);
 
 void setPrecisionPoints(int points) {
   PRECISION_POINTS = points;
-  preAlphaVal = 60000 / (float)PRECISION_POINTS;
+  preAlphaVal = 500 / (float)PRECISION_POINTS;
   ALPHA = (preAlphaVal > 1 ? 1 : preAlphaVal);
 }
 
@@ -100,7 +100,7 @@ bool AttractorFractal::paint() {
     } else {
       glEnableClientState(GL_COLOR_ARRAY);
       glColorPointer(4, GL_FLOAT, sizeof(Vec4f), colors.data());
-      glDrawArrays(GL_POINTS, 0, getNumPoints());
+      glDrawArrays(GL_TRIANGLES, 0, getNumPoints());
       glDisableClientState(GL_COLOR_ARRAY);
     }
 

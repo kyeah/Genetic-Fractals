@@ -82,7 +82,7 @@ void error_callback(int error, const char* description)
 
 void startDisplay() {
   TwInit(TW_OPENGL, NULL);
-  createFractalEditorWindow();
+  //createFractalEditorWindow();
   registerCallbacks();
   renderInGlut();
 }
@@ -180,12 +180,11 @@ int main(int argc, char** argv){
         Repaint();
         ExternalRenderer::outputToImage(ss.str());
         //mainFractal->saveToFile(mainFractal->getName());
-
+        
       } else {
         startDisplay();
       }
     }
-
   } else {
     // No fractal definitions provided; draw an example fractal.
     // mainFractal = new CliffordAttractor("test", "sin(-1.4 * y) + cos(-1.4 * x)", "sin(1.6 * x) + 0.7 * cos(1.6 * y)", "x", "x", "y", "z");
