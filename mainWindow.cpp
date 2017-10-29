@@ -167,9 +167,10 @@ void Repaint() {
   
   if (!waiting && capturing) {
     std::ostringstream ss;
-    ss << "capture/test" << std::setw( 7 ) << std::setfill( '0' ) << num++;
+    ss << "capture5/test" << std::setw( 7 ) << std::setfill( '0' ) << num++;
     ExternalRenderer::outputToImage(ss.str());
   }
+
     //} else if (fadeAlpha > 0) {
     //fadeAlpha -= fadeSpeed;
     //glutPostRedisplay();

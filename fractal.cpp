@@ -12,7 +12,7 @@ float ALPHA = (preAlphaVal > 1 ? 1 : preAlphaVal);
 
 void setPrecisionPoints(int points) {
   PRECISION_POINTS = points;
-  preAlphaVal = 10000 / (float)PRECISION_POINTS;
+  preAlphaVal = 40000 / (float)PRECISION_POINTS;
   ALPHA = (preAlphaVal > 1 ? 1 : preAlphaVal);
 }
 
@@ -115,9 +115,10 @@ bool AttractorFractal::paintSpline() {
   static vector<int> delay_starts;
   static int delay = 80;
   static int order = 10;
+  static float segments = 100.0;
 
   if (starts.size() == 0) {
-    for (int i = 0; i < 3; i++) {
+    for (int i = 0; i < 1000; i++) {
       starts.push_back(rand() % (getNumPoints() / order));
       delay_starts.push_back(rand() % delay);
       widths.push_back((rand() % 5) + 2);
@@ -142,9 +143,9 @@ bool AttractorFractal::paintSpline() {
 
       glLineWidth(widths[s * 2]);
       glBegin(GL_LINE_STRIP);
-      for (int uInt = (delay_starts[s] * (100.0/delay)); uInt <= 100; uInt++)
+      for (int uInt = (delay_starts[s] * (segments/delay)); uInt <= segments; uInt++)
         {                                   
-          GLfloat u = uInt/(GLfloat)100; 
+          GLfloat u = uInt/segments; 
           glEvalCoord1f(u);                 
         }                                   
       glEnd();
@@ -154,17 +155,19 @@ bool AttractorFractal::paintSpline() {
       glEnable(GL_MAP1_COLOR_4);
       glEnable(GL_MAP1_VERTEX_3);
       
-      glHint(GL_LINE_SMOOTH_HINT,GL_NICEST);
-      glEnable(GL_LINE_SMOOTH);
+      glHint(GL_POINT_SMOOTH_HINT,GL_NICEST);
+      glEnable(GL_POINT_SMOOTH);
       glLineWidth(widths[s * 2 + 1]);
-      glBegin(GL_LINE_STRIP);
+      /*glBegin(GL_LINE_STRIP);
       
-      for (int uInt = 0; uInt <= (delay_starts[s] * (100.0/delay)); uInt++)
+      for (int uInt = 0; uInt <= (delay_starts[s] * (segments/delay)); uInt++)
         {                                   
-          GLfloat u = uInt/(GLfloat)100; 
+          GLfloat u = uInt/segments; 
           glEvalCoord1f(u);                 
         }                                   
-      glEnd();
+      glEnd();*/
+      glMapGrid1f(1000, 0.0, 1.0);
+      glEvalMesh1(GL_POINT, 0, 1000);
 
       delay_starts[s]++;
       if (delay_starts[s] > delay) {
@@ -175,12 +178,8 @@ bool AttractorFractal::paintSpline() {
       }
       widths[2*s] = widths[2*s + 1];
       widths[2*s+1] = (rand() % 5) + 2;
-      
       }
     }
-
-       //glMapGrid1f(1000, 0.0, 1.0);
-      //glEvalMesh1(GL_POINT, 0, 1000);
 
     return true;
   }

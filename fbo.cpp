@@ -3,7 +3,7 @@
 #include "fbo.h"
 #include <png.h>
 
-bool alpha_save = true;
+bool alpha_save = false;
 int image_width = 1024, image_height = 1024;
 GLuint framebuffer;
 GLuint status;
